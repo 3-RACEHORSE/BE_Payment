@@ -30,8 +30,8 @@ public enum ResponseStatus {
     /**
      * 결제오류 수정예정
      */
-    ALREADY_PAID_ORDER_ID(1000, "이미 결제된 주문번호입니다"),
-    DOSE_NOT_EXIST_PAYMENT(1001, "결제내역이 존재하지 않습니다"),
+    ALREADY_PAID_AUCTION_UUID(400, "이미 결제된 경매입니다"),
+    DOSE_NOT_EXIST_PAYMENT(404, "결제내역이 존재하지 않습니다"),
     CANCELED_AMOUNT_EXCEEDED(1002, "취소 금액 한도를 초과하였습니다"),
     PAYMENT_DATA_TRANSFER_FAILED(1003, "결제 정산 정보 전송에 실패하였습니다"),
 
