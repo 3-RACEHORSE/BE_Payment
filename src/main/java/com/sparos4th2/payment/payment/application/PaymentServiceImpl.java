@@ -58,6 +58,7 @@ public class PaymentServiceImpl implements PaymentService {
 			.price(paymentAddRequestDto.getPrice())
 			.memberUuid(uuid)
 			.sellerUuid("sellerUuid")
+			.paymentNumber(paymentAddRequestDto.getPaymentNumber())
 			.paymentStatus(PaymentStatus.PAYMENT_PENDING)
 			.userPaymentStatus(MemberPaymentStatus.MEMBER_PAYMENT_READY)
 			.sellerPaymentStatus(MemberPaymentStatus.MEMBER_PAYMENT_READY)
@@ -83,6 +84,7 @@ public class PaymentServiceImpl implements PaymentService {
 				.memberUuid(payment.getMemberUuid())
 				.sellerUuid(payment.getSellerUuid())
 				.paymentMethod(payment.getPaymentMethod())
+				.paymentNumber(payment.getPaymentNumber())
 				.paymentStatus(payment.getPaymentStatus())
 				.userPaymentStatus(MemberPaymentStatus.MEMBER_PAYMENT_AGREE)
 				.sellerPaymentStatus(payment.getSellerPaymentStatus())
@@ -96,6 +98,7 @@ public class PaymentServiceImpl implements PaymentService {
 				.memberUuid(payment.getMemberUuid())
 				.sellerUuid(payment.getSellerUuid())
 				.paymentMethod(payment.getPaymentMethod())
+				.paymentNumber(payment.getPaymentNumber())
 				.paymentStatus(payment.getPaymentStatus())
 				.userPaymentStatus(payment.getUserPaymentStatus())
 				.sellerPaymentStatus(MemberPaymentStatus.MEMBER_PAYMENT_AGREE)
@@ -120,6 +123,7 @@ public class PaymentServiceImpl implements PaymentService {
 				.memberUuid(savedpayment.getMemberUuid())
 				.sellerUuid(savedpayment.getSellerUuid())
 				.paymentMethod(savedpayment.getPaymentMethod())
+				.paymentNumber(payment.getPaymentNumber())
 				.paymentStatus(PaymentStatus.PAYMENT_COMPLETE)
 				.userPaymentStatus(savedpayment.getUserPaymentStatus())
 				.sellerPaymentStatus(savedpayment.getSellerPaymentStatus())
@@ -127,6 +131,16 @@ public class PaymentServiceImpl implements PaymentService {
 				.paymentCompletionAt(currentTime)
 				.build());
 		}
+	}
+
+	//결제번호 마스킹
+	private String maskPaymentNumber(String paymentNumber) {
+		if (paymentNumber == null || paymentNumber.length() <= 5) {
+			return paymentNumber;
+		}
+		String firstDigit = paymentNumber.substring(0, 5);
+		String maskedRest = paymentNumber.substring(5).replaceAll(".", "*");
+		return firstDigit + maskedRest;
 	}
 
 	//결제 상세 조회
@@ -137,11 +151,14 @@ public class PaymentServiceImpl implements PaymentService {
 				paymentDetailRequestDto.getPaymentUuid())
 			.orElseThrow(() -> new CustomException(ResponseStatus.DOSE_NOT_EXIST_PAYMENT));
 
+		String maskedPaymentNumber = maskPaymentNumber(payment.getPaymentNumber());
+
 		return PaymentDetailResponseDto.builder()
 			.paymentUuid(payment.getPaymentUuid())
 			.auctionUuid(payment.getAuctionUuid())
 			.paymentMethod(payment.getPaymentMethod())
 			.price(payment.getPrice())
+			.paymentNumber(maskedPaymentNumber)
 			.paymentStatus(payment.getPaymentStatus())
 			.paymentAt(payment.getPaymentAt())
 			.paymentCompletionAt(payment.getPaymentCompletionAt())
