@@ -9,4 +9,5 @@ public class PaymentAddRequestVo {
 	private String auctionUuid;
 	private String paymentMethod;
 	private int price;
+	private String paymentNumber;
 }

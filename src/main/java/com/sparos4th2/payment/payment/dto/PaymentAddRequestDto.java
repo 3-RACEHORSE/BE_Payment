@@ -17,12 +17,14 @@ public class PaymentAddRequestDto {
 	private String auctionUuid;
 	private String paymentMethod;
 	private int price;
+	private String paymentNumber;
 
 	public static PaymentAddRequestDto voToDto(PaymentAddRequestVo paymentAddRequestVo) {
 		return PaymentAddRequestDto.builder()
 			.auctionUuid(paymentAddRequestVo.getAuctionUuid())
 			.paymentMethod(paymentAddRequestVo.getPaymentMethod())
 			.price(paymentAddRequestVo.getPrice())
+			.paymentNumber(paymentAddRequestVo.getPaymentNumber())
 			.build();
 	}
 }

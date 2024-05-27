@@ -35,6 +35,8 @@ public class Payment extends BaseCreateTimeEntity {
 	private String sellerUuid;
 	@Column(name = "payment_method", nullable = false)
 	private String paymentMethod;
+	@Column(name = "payment_Number")
+	private String paymentNumber; //카드번호나 계좌번호 같은 것
 	@Enumerated(EnumType.STRING)
 	private PaymentStatus paymentStatus;
 	@Enumerated(EnumType.STRING)
@@ -47,7 +49,7 @@ public class Payment extends BaseCreateTimeEntity {
 
 	@Builder
 	public Payment(Long id, String paymentUuid, String auctionUuid, String memberUuid, String sellerUuid,
-		String paymentMethod,
+		String paymentMethod, String paymentNumber,
 		PaymentStatus paymentStatus, MemberPaymentStatus userPaymentStatus,
 		MemberPaymentStatus sellerPaymentStatus,
 		int price, LocalDateTime paymentCompletionAt) {
@@ -57,6 +59,7 @@ public class Payment extends BaseCreateTimeEntity {
 		this.memberUuid = memberUuid;
 		this.sellerUuid = sellerUuid;
 		this.paymentMethod = paymentMethod;
+		this.paymentNumber = paymentNumber;
 		this.paymentStatus = paymentStatus;
 		this.userPaymentStatus = userPaymentStatus;
 		this.sellerPaymentStatus = sellerPaymentStatus;
