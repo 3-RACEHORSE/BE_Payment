@@ -11,7 +11,7 @@ public interface PaymentService {
 
 	void savePayment(String uuid, PaymentAddRequestDto paymentAddRequestDto);
 
-	void AgreePayment(String uuid, PaymentAgreeRequestDto paymentAgreeRequestDto);
+	void agreePayment(String uuid, PaymentAgreeRequestDto paymentAgreeRequestDto);
 
 	PaymentDetailResponseDto findPaymentDetail(String uuid,
 		PaymentDetailRequestDto paymentDetailRequestDto);

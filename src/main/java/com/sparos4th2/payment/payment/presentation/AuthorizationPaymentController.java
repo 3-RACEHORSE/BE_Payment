@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -47,7 +48,7 @@ public class AuthorizationPaymentController {
 	@Operation(summary = "결제 승인", description = "결제 승인")
 	public SuccessResponse<Object> agreePayment(@RequestHeader String uuid,
 		@RequestBody PaymentAgreeRequestVo paymentAgreeRequestVo) {
-		paymentService.AgreePayment(uuid,
+		paymentService.agreePayment(uuid,
 			PaymentAgreeRequestDto.voToDto(paymentAgreeRequestVo));
 		return new SuccessResponse<>(null);
 	}
@@ -72,5 +73,11 @@ public class AuthorizationPaymentController {
 			paymentListResponseVoList.add(PaymentListResponseDto.dtoToVo(paymentListResponseDto));
 		}
 		return new SuccessResponse<>(paymentListResponseVoList);
+	}
+
+	@GetMapping("/is-pending")
+	@Operation(summary = "결제 대기 여부 조회", description = "결제 대기 여부를 조회합니다.")
+	public SuccessResponse<Boolean> isPending(@RequestParam String auctionUuid) {
+		return new SuccessResponse<>(true);
 	}
 }
