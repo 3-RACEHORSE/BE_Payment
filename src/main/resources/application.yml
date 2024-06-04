@@ -1,6 +1,8 @@
 spring:
   application:
     name: payment-service
+  profiles:
+    active: none
   config:
     import: optional:configserver:${CONFIG_SERVER_URL}
 
