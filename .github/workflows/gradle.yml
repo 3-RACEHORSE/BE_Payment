@@ -1,0 +1,89 @@
+name: Gateway server CI/CD with gradle
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-docker-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set Yaml
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: ./src/main/resources/application.yml
+        env:
+          spring.config.import: ${{secrets.CONFIG_SERVER_URL}}
+          encrypt.key: ${{ secrets.ENCRYPT_KEY }}
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: login Docker
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build docker image
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/payment-service:latest -f Dockerfile .
+
+      - name: Push docker hub
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/payment-service:latest
+
+  run-docker-image-on-ec2:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build-docker-image
+    runs-on: new-runner
+
+    steps:
+      - name: Pull image from docker hub
+        run: |
+          sudo docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password ${{ secrets.DOCKERHUB_PASSWORD }}
+          sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/payment-service:latest
+
+      - name: Check if container is running
+        id: check-container
+        run: |
+          if sudo docker ps -a | grep -q payment-service; then
+            echo "payment-service-running=true" >> $GITHUB_OUTPUT
+          else
+            echo "payment-service-running=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Stop and remove container
+        if: steps.check-container.outputs.payment-service-running == 'true'
+        run: |
+          sudo docker stop payment-service
+          sudo docker rm payment-service     
+
+      - name: Run new docker container
+        run: sudo docker run -d --name payment-service -p 9004:9004 --net cheonma-network ${{ secrets.DOCKERHUB_USERNAME }}/payment-service:latest
+
+      - name: Delete old docker image
+        run: sudo docker system prune -f
