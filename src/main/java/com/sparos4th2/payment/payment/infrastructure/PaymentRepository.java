@@ -13,8 +13,6 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
 	List<Payment> findByMemberUuid(String memberUuid);
 
-	Optional<Payment> findBySellerUuid(String sellerUuid);
-
 	Optional<Payment> findByPaymentUuid(String paymentUuid);
 
 	Optional<Payment> findByMemberUuidAndPaymentUuid(String memberUuid, String paymentUuid);

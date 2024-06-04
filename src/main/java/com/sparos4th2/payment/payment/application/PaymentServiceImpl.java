@@ -57,6 +57,7 @@ public class PaymentServiceImpl implements PaymentService {
 			.paymentMethod(paymentAddRequestDto.getPaymentMethod())
 			.price(paymentAddRequestDto.getPrice())
 			.memberUuid(uuid)
+			//TODO: 경매 서비스에서 판매자 UUID 가져오기
 			.sellerUuid("sellerUuid")
 			.paymentNumber(paymentAddRequestDto.getPaymentNumber())
 			.paymentStatus(PaymentStatus.PAYMENT_PENDING)
@@ -70,7 +71,7 @@ public class PaymentServiceImpl implements PaymentService {
 	//결제 승인
 	@Override
 	@Transactional
-	public void AgreePayment(String uuid, PaymentAgreeRequestDto paymentAgreeRequestDto) {
+	public void agreePayment(String uuid, PaymentAgreeRequestDto paymentAgreeRequestDto) {
 		Payment payment = paymentRepository.findByPaymentUuid(
 				paymentAgreeRequestDto.getPaymentUuid())
 			.orElseThrow(() -> new CustomException(ResponseStatus.DOSE_NOT_EXIST_PAYMENT));
