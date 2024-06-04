@@ -24,7 +24,7 @@ jobs:
         run: |
           echo "CONFIG_SERVER_URL=${{secrets.CONFIG_SERVER_URL}}" >> $GITHUB_ENV
           echo "ENCRYPT_KEY=${{secrets.ENCRYPT_KEY}}" >> $GITHUB_ENV
-          echo "SPRING_CLOUD_CONFIG_PROFILE=prod" >> $GITHUB_ENV
+          echo "PROFILE=prod" >> $GITHUB_ENV
 
       - name: Substitute variables in application.yml
         run: |
