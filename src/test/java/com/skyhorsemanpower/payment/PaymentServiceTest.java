@@ -55,10 +55,10 @@ public class PaymentServiceTest {
         ).thenReturn(Optional.of(payment));
 
         //when
-        boolean isPending = this.paymentService.existPayment(auctionUuid);
+        boolean exist = this.paymentService.existPayment(auctionUuid);
 
         //then
-        assertTrue(isPending);
+        assertTrue(exist);
     }
 
     @Test
