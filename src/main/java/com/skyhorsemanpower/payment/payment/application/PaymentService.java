@@ -17,4 +17,6 @@ public interface PaymentService {
 		PaymentDetailRequestDto paymentDetailRequestDto);
 
 	List<PaymentListResponseDto> findPaymentList(String uuid);
+
+	boolean isPendingPayment(String auctionUuid);
 }

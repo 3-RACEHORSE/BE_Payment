@@ -14,6 +14,7 @@ import com.skyhorsemanpower.payment.payment.infrastructure.PaymentRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +60,7 @@ public class PaymentServiceImpl implements PaymentService {
 			//TODO: 경매 서비스에서 판매자 UUID 가져오기
 			.sellerUuid("sellerUuid")
 			.paymentNumber(paymentAddRequestDto.getPaymentNumber())
-			.paymentStatus(PaymentStatus.PAYMENT_PENDING)
+			.paymentStatus(PaymentStatus.PENDING)
 			.userPaymentStatus(MemberPaymentStatus.MEMBER_PAYMENT_READY)
 			.sellerPaymentStatus(MemberPaymentStatus.MEMBER_PAYMENT_READY)
 			.build();
@@ -124,7 +125,7 @@ public class PaymentServiceImpl implements PaymentService {
 				.sellerUuid(savedpayment.getSellerUuid())
 				.paymentMethod(savedpayment.getPaymentMethod())
 				.paymentNumber(payment.getPaymentNumber())
-				.paymentStatus(PaymentStatus.PAYMENT_COMPLETE)
+				.paymentStatus(PaymentStatus.COMPLETE)
 				.userPaymentStatus(savedpayment.getUserPaymentStatus())
 				.sellerPaymentStatus(savedpayment.getSellerPaymentStatus())
 				.price(savedpayment.getPrice())
@@ -183,5 +184,16 @@ public class PaymentServiceImpl implements PaymentService {
 		}
 
 		return paymentListResponseDtoList;
+	}
+
+	//결제 대기 여부 조회
+	@Override
+	public boolean isPendingPayment(String auctionUuid) {
+		Optional<Payment> paymentOpt = this.paymentRepository.findByAuctionUuid(auctionUuid);
+
+		if (paymentOpt.isEmpty()) {
+			throw new CustomException(ResponseStatus.DOSE_NOT_EXIST_PAYMENT);
+		}
+		return paymentOpt.get().getPaymentStatus().equals(PaymentStatus.PENDING);
 	}
 }
