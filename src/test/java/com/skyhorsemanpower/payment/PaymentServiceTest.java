@@ -1,6 +1,7 @@
 package com.skyhorsemanpower.payment;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.skyhorsemanpower.payment.common.GenerateRandom;
 import com.skyhorsemanpower.payment.common.PaymentStatus;
@@ -11,8 +12,7 @@ import com.skyhorsemanpower.payment.payment.infrastructure.PaymentRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 public class PaymentServiceTest {
@@ -35,10 +35,9 @@ public class PaymentServiceTest {
         this.paymentNumber = "9490-9464-2678-5492";
     }
 
-    @ParameterizedTest
-    @EnumSource(value = PaymentStatus.class)
-    @DisplayName("경매가 결제 대기 상태인지 조회한다.")
-    void paymentStatusIsPendingTest(PaymentStatus paymentStatus) {
+    @Test
+    @DisplayName("경매 결제 내역이 존재하면 true를 반환한다.")
+    void paymentExistTest() {
         //given
         Payment payment = Payment.builder()
             .id(1L)
@@ -48,7 +47,7 @@ public class PaymentServiceTest {
             .sellerUuid(sellerUuid)
             .paymentMethod("toss")
             .paymentNumber(paymentNumber)
-            .paymentStatus(paymentStatus)
+            .paymentStatus(PaymentStatus.PENDING)
             .build();
 
         Mockito.when(
@@ -56,9 +55,24 @@ public class PaymentServiceTest {
         ).thenReturn(Optional.of(payment));
 
         //when
-        boolean isPending = this.paymentService.isPendingPayment(auctionUuid);
+        boolean isPending = this.paymentService.existPayment(auctionUuid);
 
         //then
-        assertThat(isPending).isEqualTo(paymentStatus == PaymentStatus.PENDING);
+        assertTrue(isPending);
+    }
+
+    @Test
+    @DisplayName("경매 결제 내역이 존재하지 않으면 false를 반환한다.")
+    void paymentNotExistTest() {
+        //given
+        Mockito.when(
+            paymentRepository.findByAuctionUuid(auctionUuid)
+        ).thenReturn(Optional.empty());
+
+        //when
+        boolean isPending = this.paymentService.existPayment(auctionUuid);
+
+        //then
+        assertFalse(isPending);
     }
 }
