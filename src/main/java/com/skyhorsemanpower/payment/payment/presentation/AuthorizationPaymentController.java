@@ -1,5 +1,7 @@
 package com.skyhorsemanpower.payment.payment.presentation;
 
+import com.skyhorsemanpower.payment.common.KafkaEntity;
+import com.skyhorsemanpower.payment.common.KafkaProducerCluster;
 import com.skyhorsemanpower.payment.payment.application.PaymentService;
 import com.skyhorsemanpower.payment.payment.dto.PaymentDetailRequestDto;
 import com.skyhorsemanpower.payment.common.SuccessResponse;
@@ -34,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthorizationPaymentController {
 
 	private final PaymentService paymentService;
+	private final KafkaProducerCluster producer;
 
 	@PostMapping
 	@Operation(summary = "결제", description = "결제")
@@ -77,6 +80,13 @@ public class AuthorizationPaymentController {
 	@GetMapping("/is-pending")
 	@Operation(summary = "결제 대기 여부 조회", description = "결제 대기 여부를 조회합니다.")
 	public SuccessResponse<Boolean> isPending(@RequestParam String auctionUuid) {
+		this.producer.sendMessage("kafka-json-test",
+			KafkaEntity.builder()
+				.receiverUuid("userUuid")
+				.eventType("payment")
+				.message("결제 대기 여부 조회")
+				.build()
+			);
 		return new SuccessResponse<>(true);
 	}
 }
