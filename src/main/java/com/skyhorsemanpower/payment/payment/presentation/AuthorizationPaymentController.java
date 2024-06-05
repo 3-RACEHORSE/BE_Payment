@@ -1,7 +1,7 @@
 package com.skyhorsemanpower.payment.payment.presentation;
 
-import com.skyhorsemanpower.payment.common.KafkaEntity;
-import com.skyhorsemanpower.payment.common.KafkaProducerCluster;
+import com.skyhorsemanpower.payment.common.kafka.KafkaEntity;
+import com.skyhorsemanpower.payment.common.kafka.KafkaProducerCluster;
 import com.skyhorsemanpower.payment.payment.application.PaymentService;
 import com.skyhorsemanpower.payment.payment.dto.PaymentDetailRequestDto;
 import com.skyhorsemanpower.payment.common.SuccessResponse;
@@ -84,7 +84,7 @@ public class AuthorizationPaymentController {
 			KafkaEntity.builder()
 				.receiverUuid("userUuid")
 				.eventType("payment")
-				.message("결제 대기 여부 조회")
+				.message("결제를 완료했어요")
 				.build()
 			);
 		return new SuccessResponse<>(true);
