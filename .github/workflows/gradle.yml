@@ -20,14 +20,17 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Set Yaml
-        uses: microsoft/variable-substitution@v1
-        with:
-          files: ./src/main/resources/application.yml
-        env:
-          spring.config.import: ${{secrets.CONFIG_SERVER_URL}}
-          encrypt.key: ${{ secrets.ENCRYPT_KEY }}
-          spring.cloud.config.profile: 'prod'
+      - name: Set environment variables
+        run: |
+          echo "CONFIG_SERVER_URL=${{secrets.CONFIG_SERVER_URL}}" >> $GITHUB_ENV
+          echo "ENCRYPT_KEY=${{secrets.ENCRYPT_KEY}}" >> $GITHUB_ENV
+          echo "PROFILE=prod" >> $GITHUB_ENV
+
+      - name: Substitute variables in application.yml
+        run: |
+          apt-get update && apt-get install -y gettext-base
+          envsubst < src/main/resources/application.yml > src/main/resources/application.yml.temp
+          mv src/main/resources/application.yml.temp src/main/resources/application.yml
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -43,7 +46,7 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew clean build
 
       - name: login Docker
         uses: docker/login-action@v2
@@ -52,7 +55,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Build docker image
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/payment-service:latest -f Dockerfile .
+        run: docker build --build-arg KAFKA_BOOTSTRAP_SERVERS=${{ secrets.KAFKA_BOOTSTRAP_SERVERS }} -t ${{ secrets.DOCKERHUB_USERNAME }}/payment-service:latest -f Dockerfile .
 
       - name: Push docker hub
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/payment-service:latest
