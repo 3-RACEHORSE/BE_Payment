@@ -41,21 +41,25 @@ public class Payment extends BaseCreateTimeEntity {
     private String paymentMethod;
     @Column(name = "payment_number", nullable = false, length = 50)
     private String paymentNumber; //카드번호나 계좌번호 같은 것
+    @Column(name = "payment_status", nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
+    @Column(name = "buyer_payment_status", nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
-    private MemberPaymentStatus userPaymentStatus;
+    private MemberPaymentStatus buyerPaymentStatus;
+    @Column(name = "seller_payment_status", nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private MemberPaymentStatus sellerPaymentStatus;
     @Column(name = "price", nullable = false, length = 100)
     private double price;
+    @Column(name = "payment_completion_at", nullable = true, length = 100)
     private LocalDateTime paymentCompletionAt;
 
     @Builder
     public Payment(Long id, String paymentUuid, String auctionUuid, String memberUuid,
         String sellerUuid,
         String paymentMethod, String paymentNumber,
-        PaymentStatus paymentStatus, MemberPaymentStatus userPaymentStatus,
+        PaymentStatus paymentStatus, MemberPaymentStatus buyerPaymentStatus,
         MemberPaymentStatus sellerPaymentStatus,
         double price, LocalDateTime paymentCompletionAt) {
         this.id = id;
@@ -66,7 +70,7 @@ public class Payment extends BaseCreateTimeEntity {
         this.paymentMethod = paymentMethod;
         this.paymentNumber = paymentNumber;
         this.paymentStatus = paymentStatus;
-        this.userPaymentStatus = userPaymentStatus;
+        this.buyerPaymentStatus = buyerPaymentStatus;
         this.sellerPaymentStatus = sellerPaymentStatus;
         this.price = price;
         this.paymentCompletionAt = paymentCompletionAt;
