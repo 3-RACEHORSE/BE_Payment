@@ -188,12 +188,8 @@ public class PaymentServiceImpl implements PaymentService {
 
 	//결제 대기 여부 조회
 	@Override
-	public boolean isPendingPayment(String auctionUuid) {
+	public boolean existPayment(String auctionUuid) {
 		Optional<Payment> paymentOpt = this.paymentRepository.findByAuctionUuid(auctionUuid);
-
-		if (paymentOpt.isEmpty()) {
-			throw new CustomException(ResponseStatus.DOSE_NOT_EXIST_PAYMENT);
-		}
-		return paymentOpt.get().getPaymentStatus().equals(PaymentStatus.PENDING);
-	}
+        return paymentOpt.isPresent();
+    }
 }
