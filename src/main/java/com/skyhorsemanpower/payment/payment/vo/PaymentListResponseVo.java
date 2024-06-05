@@ -9,11 +9,11 @@ public class PaymentListResponseVo {
 
 	private String paymentUuid;
 	private String auctionUuid;
-	private int price;
+	private double price;
 	private PaymentStatus paymentStatus;
 	private LocalDateTime paymentAt;
 
-	public PaymentListResponseVo(String paymentUuid, String auctionUuid, int price,
+	public PaymentListResponseVo(String paymentUuid, String auctionUuid, double price,
 		PaymentStatus paymentStatus, LocalDateTime paymentAt) {
 		this.paymentUuid = paymentUuid;
 		this.auctionUuid = auctionUuid;

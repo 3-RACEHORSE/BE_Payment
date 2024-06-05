@@ -16,7 +16,7 @@ public class PaymentAddRequestDto {
 
 	private String auctionUuid;
 	private String paymentMethod;
-	private int price;
+	private double price;
 	private String paymentNumber;
 
 	public static PaymentAddRequestDto voToDto(PaymentAddRequestVo paymentAddRequestVo) {

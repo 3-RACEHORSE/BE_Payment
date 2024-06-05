@@ -19,7 +19,7 @@ public class PaymentDetailResponseDto {
 	private String paymentUuid;
 	private String auctionUuid;
 	private String paymentMethod;
-	private int price;
+	private double price;
 	private String paymentNumber;
 	private PaymentStatus paymentStatus;
 	private LocalDateTime paymentAt;

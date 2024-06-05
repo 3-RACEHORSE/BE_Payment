@@ -14,6 +14,7 @@ import com.skyhorsemanpower.payment.payment.infrastructure.PaymentRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,7 @@ public class PaymentServiceImpl implements PaymentService {
 	//uuid 생성
 	private String createUuid() {
 		String character = "0123456789";
-		StringBuilder uuid = new StringBuilder("");
+		StringBuilder uuid = new StringBuilder();
 		Random random = new Random();
 		for (int i = 0; i < 9; i++) {
 			uuid.append(character.charAt(random.nextInt(character.length())));
@@ -59,9 +60,9 @@ public class PaymentServiceImpl implements PaymentService {
 			//TODO: 경매 서비스에서 판매자 UUID 가져오기
 			.sellerUuid("sellerUuid")
 			.paymentNumber(paymentAddRequestDto.getPaymentNumber())
-			.paymentStatus(PaymentStatus.PAYMENT_PENDING)
-			.userPaymentStatus(MemberPaymentStatus.MEMBER_PAYMENT_READY)
-			.sellerPaymentStatus(MemberPaymentStatus.MEMBER_PAYMENT_READY)
+			.paymentStatus(PaymentStatus.PENDING)
+			.buyerPaymentStatus(MemberPaymentStatus.READY)
+			.sellerPaymentStatus(MemberPaymentStatus.READY)
 			.build();
 
 		paymentRepository.save(payment);
@@ -86,7 +87,7 @@ public class PaymentServiceImpl implements PaymentService {
 				.paymentMethod(payment.getPaymentMethod())
 				.paymentNumber(payment.getPaymentNumber())
 				.paymentStatus(payment.getPaymentStatus())
-				.userPaymentStatus(MemberPaymentStatus.MEMBER_PAYMENT_AGREE)
+				.buyerPaymentStatus(MemberPaymentStatus.AGREE)
 				.sellerPaymentStatus(payment.getSellerPaymentStatus())
 				.price(payment.getPrice())
 				.build());
@@ -100,8 +101,8 @@ public class PaymentServiceImpl implements PaymentService {
 				.paymentMethod(payment.getPaymentMethod())
 				.paymentNumber(payment.getPaymentNumber())
 				.paymentStatus(payment.getPaymentStatus())
-				.userPaymentStatus(payment.getUserPaymentStatus())
-				.sellerPaymentStatus(MemberPaymentStatus.MEMBER_PAYMENT_AGREE)
+				.buyerPaymentStatus(payment.getBuyerPaymentStatus())
+				.sellerPaymentStatus(MemberPaymentStatus.AGREE)
 				.price(payment.getPrice())
 				.build());
 		}
@@ -110,9 +111,9 @@ public class PaymentServiceImpl implements PaymentService {
 				paymentAgreeRequestDto.getPaymentUuid())
 			.orElseThrow(() -> new CustomException(ResponseStatus.DOSE_NOT_EXIST_PAYMENT));
 
-		if (savedpayment.getUserPaymentStatus().equals(MemberPaymentStatus.MEMBER_PAYMENT_AGREE)
+		if (savedpayment.getBuyerPaymentStatus().equals(MemberPaymentStatus.AGREE)
 			&& savedpayment.getSellerPaymentStatus()
-			.equals(MemberPaymentStatus.MEMBER_PAYMENT_AGREE)) {
+			.equals(MemberPaymentStatus.AGREE)) {
 
 			LocalDateTime currentTime = LocalDateTime.now();
 
@@ -124,8 +125,8 @@ public class PaymentServiceImpl implements PaymentService {
 				.sellerUuid(savedpayment.getSellerUuid())
 				.paymentMethod(savedpayment.getPaymentMethod())
 				.paymentNumber(payment.getPaymentNumber())
-				.paymentStatus(PaymentStatus.PAYMENT_COMPLETE)
-				.userPaymentStatus(savedpayment.getUserPaymentStatus())
+				.paymentStatus(PaymentStatus.COMPLETE)
+				.buyerPaymentStatus(savedpayment.getBuyerPaymentStatus())
 				.sellerPaymentStatus(savedpayment.getSellerPaymentStatus())
 				.price(savedpayment.getPrice())
 				.paymentCompletionAt(currentTime)
@@ -139,7 +140,7 @@ public class PaymentServiceImpl implements PaymentService {
 			return paymentNumber;
 		}
 		String firstDigit = paymentNumber.substring(0, 5);
-		String maskedRest = paymentNumber.substring(5).replaceAll(".", "*");
+		String maskedRest = paymentNumber.substring(5).replaceAll("\\.", "*");
 		return firstDigit + maskedRest;
 	}
 
@@ -183,5 +184,16 @@ public class PaymentServiceImpl implements PaymentService {
 		}
 
 		return paymentListResponseDtoList;
+	}
+
+	//결제 대기 여부 조회
+	@Override
+	public boolean isPendingPayment(String auctionUuid) {
+		Optional<Payment> paymentOpt = this.paymentRepository.findByAuctionUuid(auctionUuid);
+
+		if (paymentOpt.isEmpty()) {
+			throw new CustomException(ResponseStatus.DOSE_NOT_EXIST_PAYMENT);
+		}
+		return paymentOpt.get().getPaymentStatus().equals(PaymentStatus.PENDING);
 	}
 }

@@ -1,4 +1,4 @@
-package com.skyhorsemanpower.payment.common;
+package com.skyhorsemanpower.payment.common.kafka;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
