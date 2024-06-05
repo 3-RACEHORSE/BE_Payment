@@ -12,7 +12,7 @@ import com.skyhorsemanpower.payment.payment.vo.PaymentAddRequestVo;
 import com.skyhorsemanpower.payment.payment.vo.PaymentAgreeRequestVo;
 import com.skyhorsemanpower.payment.payment.vo.PaymentDetailRequestVo;
 import com.skyhorsemanpower.payment.payment.vo.PaymentDetailResponseVo;
-import com.skyhorsemanpower.payment.payment.vo.PaymentIsPendingResponseVo;
+import com.skyhorsemanpower.payment.payment.vo.PaymentExistResponseVo;
 import com.skyhorsemanpower.payment.payment.vo.PaymentListResponseVo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -77,10 +77,10 @@ public class AuthorizationPaymentController {
         return new SuccessResponse<>(paymentListResponseVoList);
     }
 
-    @GetMapping("/is-pending")
-    @Operation(summary = "결제 대기 여부 조회", description = "결제 대기 여부를 조회합니다.")
-    public SuccessResponse<PaymentIsPendingResponseVo> isPending(@RequestParam String auctionUuid) {
+    @GetMapping("/existence")
+    @Operation(summary = "결제 내역 존재 여부 조회", description = "결제 내역이 존재하는지 조회합니다.")
+    public SuccessResponse<PaymentExistResponseVo> isPending(@RequestParam String auctionUuid) {
         return new SuccessResponse<>(
-            new PaymentIsPendingResponseVo(this.paymentService.isPendingPayment(auctionUuid)));
+            new PaymentExistResponseVo(this.paymentService.existPayment(auctionUuid)));
     }
 }
