@@ -1,7 +1,6 @@
 package com.skyhorsemanpower.payment.payment.domain;
 
 import com.skyhorsemanpower.payment.common.BaseCreateTimeEntity;
-import com.skyhorsemanpower.payment.common.MemberPaymentStatus;
 import com.skyhorsemanpower.payment.common.PaymentStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -35,8 +34,6 @@ public class Payment extends BaseCreateTimeEntity {
     private String auctionUuid;
     @Column(name = "member_uuid", nullable = false, length = 36)
     private String memberUuid;
-    @Column(name = "seller_uuid", nullable = false, length = 36)
-    private String sellerUuid;
     @Column(name = "payment_method", nullable = false, length = 50)
     private String paymentMethod;
     @Column(name = "payment_number", nullable = false, length = 50)
@@ -44,12 +41,6 @@ public class Payment extends BaseCreateTimeEntity {
     @Column(name = "payment_status", nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
-    @Column(name = "buyer_payment_status", nullable = false, length = 50)
-    @Enumerated(EnumType.STRING)
-    private MemberPaymentStatus buyerPaymentStatus;
-    @Column(name = "seller_payment_status", nullable = false, length = 50)
-    @Enumerated(EnumType.STRING)
-    private MemberPaymentStatus sellerPaymentStatus;
     @Column(name = "price", nullable = false, length = 100)
     private double price;
     @Column(name = "payment_completion_at", nullable = true, length = 100)
@@ -57,21 +48,16 @@ public class Payment extends BaseCreateTimeEntity {
 
     @Builder
     public Payment(Long id, String paymentUuid, String auctionUuid, String memberUuid,
-        String sellerUuid,
         String paymentMethod, String paymentNumber,
-        PaymentStatus paymentStatus, MemberPaymentStatus buyerPaymentStatus,
-        MemberPaymentStatus sellerPaymentStatus,
+        PaymentStatus paymentStatus,
         double price, LocalDateTime paymentCompletionAt) {
         this.id = id;
         this.paymentUuid = paymentUuid;
         this.auctionUuid = auctionUuid;
         this.memberUuid = memberUuid;
-        this.sellerUuid = sellerUuid;
         this.paymentMethod = paymentMethod;
         this.paymentNumber = paymentNumber;
         this.paymentStatus = paymentStatus;
-        this.buyerPaymentStatus = buyerPaymentStatus;
-        this.sellerPaymentStatus = sellerPaymentStatus;
         this.price = price;
         this.paymentCompletionAt = paymentCompletionAt;
     }
