@@ -1,22 +1,20 @@
 package com.skyhorsemanpower.payment.payment.application;
 
 import com.skyhorsemanpower.payment.payment.dto.PaymentAddRequestDto;
-import com.skyhorsemanpower.payment.payment.dto.PaymentAgreeRequestDto;
 import com.skyhorsemanpower.payment.payment.dto.PaymentDetailRequestDto;
 import com.skyhorsemanpower.payment.payment.dto.PaymentDetailResponseDto;
 import com.skyhorsemanpower.payment.payment.dto.PaymentListResponseDto;
+import com.skyhorsemanpower.payment.payment.vo.PaymentReadyVo;
 import java.util.List;
 
 public interface PaymentService {
 
-	void savePayment(String uuid, PaymentAddRequestDto paymentAddRequestDto);
+    void createPayment(PaymentReadyVo paymentReadyVo);
 
-	void agreePayment(String uuid, PaymentAgreeRequestDto paymentAgreeRequestDto);
+    void savePayment(String uuid, PaymentAddRequestDto paymentAddRequestDto);
 
-	PaymentDetailResponseDto findPaymentDetail(String uuid,
-		PaymentDetailRequestDto paymentDetailRequestDto);
+    PaymentDetailResponseDto findPaymentDetail(String uuid,
+        PaymentDetailRequestDto paymentDetailRequestDto);
 
-	List<PaymentListResponseDto> findPaymentList(String uuid);
-
-	boolean existPayment(String auctionUuid);
+    List<PaymentListResponseDto> findPaymentList(String uuid);
 }
