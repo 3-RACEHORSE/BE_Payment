@@ -2,6 +2,7 @@ package com.skyhorsemanpower.payment.payment.dto;
 
 import com.skyhorsemanpower.payment.common.PaymentStatus;
 import com.skyhorsemanpower.payment.payment.vo.PaymentDetailResponseVo;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +20,7 @@ public class PaymentDetailResponseDto {
     private String paymentUuid;
     private String auctionUuid;
     private String paymentMethod;
-    private double price;
+    private BigDecimal price;
     private String paymentNumber;
     private PaymentStatus paymentStatus;
     private LocalDateTime paymentAt;

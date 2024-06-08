@@ -1,6 +1,7 @@
 package com.skyhorsemanpower.payment.payment.dto;
 
 import com.skyhorsemanpower.payment.payment.vo.PaymentAddRequestVo;
+import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +17,7 @@ public class PaymentAddRequestDto {
 
     private String auctionUuid;
     private String paymentMethod;
-    private double price;
+    private BigDecimal price;
     private String paymentNumber;
 
     public static PaymentAddRequestDto voToDto(PaymentAddRequestVo paymentAddRequestVo) {

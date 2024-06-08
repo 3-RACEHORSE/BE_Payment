@@ -1,6 +1,7 @@
 package com.skyhorsemanpower.payment.payment.vo;
 
 import com.skyhorsemanpower.payment.common.PaymentStatus;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.Getter;
 
@@ -10,15 +11,15 @@ public class PaymentDetailResponseVo {
     private String paymentUuid;
     private String auctionUuid;
     private String paymentMethod;
-    private double price;
+    private BigDecimal price;
     private String paymentNumber;
     private PaymentStatus paymentStatus;
     private LocalDateTime paymentAt;
     private LocalDateTime paymentCompletionAt;
 
     public PaymentDetailResponseVo(String paymentUuid, String auctionUuid, String paymentMethod,
-        double price, String paymentNumber,
-        PaymentStatus paymentStatus, LocalDateTime paymentAt, LocalDateTime paymentCompletionAt) {
+        BigDecimal price, String paymentNumber, PaymentStatus paymentStatus,
+        LocalDateTime paymentAt, LocalDateTime paymentCompletionAt) {
         this.paymentUuid = paymentUuid;
         this.auctionUuid = auctionUuid;
         this.paymentMethod = paymentMethod;
