@@ -16,19 +16,19 @@ import lombok.Setter;
 @Builder
 public class PaymentListResponseDto {
 
-	private String paymentUuid;
-	private String auctionUuid;
-	private double price;
-	private PaymentStatus paymentStatus;
-	private LocalDateTime paymentAt;
+    private String paymentUuid;
+    private String auctionUuid;
+    private double price;
+    private PaymentStatus paymentStatus;
+    private LocalDateTime paymentAt;
 
-	public static PaymentListResponseVo dtoToVo(PaymentListResponseDto paymentListResponseDto) {
-		return new PaymentListResponseVo(
-			paymentListResponseDto.getPaymentUuid(),
-			paymentListResponseDto.getAuctionUuid(),
-			paymentListResponseDto.getPrice(),
-			paymentListResponseDto.getPaymentStatus(),
-			paymentListResponseDto.getPaymentAt());
-	}
+    public static PaymentListResponseVo dtoToVo(PaymentListResponseDto paymentListResponseDto) {
+        return new PaymentListResponseVo(
+            paymentListResponseDto.getPaymentUuid(),
+            paymentListResponseDto.getAuctionUuid(),
+            paymentListResponseDto.getPrice(),
+            paymentListResponseDto.getPaymentStatus(),
+            paymentListResponseDto.getPaymentAt());
+    }
 
 }
