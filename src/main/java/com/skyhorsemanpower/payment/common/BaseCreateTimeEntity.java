@@ -15,11 +15,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 public class BaseCreateTimeEntity {
 
-	@CreatedDate
-	@Column(updatable = false)
-	private LocalDateTime paymentAt;
+    @CreatedDate
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
 
-	public BaseCreateTimeEntity() {
-		this.paymentAt = LocalDateTime.now(); // 현재 시간으로 설정
-	}
+    public BaseCreateTimeEntity() {
+        this.createdAt = LocalDateTime.now(); // 현재 시간으로 설정
+    }
 }
