@@ -11,22 +11,28 @@ public class PaymentDetailResponseVo {
     private String paymentUuid;
     private String auctionUuid;
     private String paymentMethod;
-    private BigDecimal price;
     private String paymentNumber;
     private PaymentStatus paymentStatus;
-    private LocalDateTime paymentAt;
-    private LocalDateTime paymentCompletionAt;
+    private BigDecimal price;
+    private LocalDateTime createdAt;
+    private LocalDateTime completionAt;
 
-    public PaymentDetailResponseVo(String paymentUuid, String auctionUuid, String paymentMethod,
-        BigDecimal price, String paymentNumber, PaymentStatus paymentStatus,
-        LocalDateTime paymentAt, LocalDateTime paymentCompletionAt) {
+    public PaymentDetailResponseVo(
+        String paymentUuid,
+        String auctionUuid,
+        String paymentMethod,
+        String paymentNumber,
+        PaymentStatus paymentStatus,
+        BigDecimal price,
+        LocalDateTime createdAt,
+        LocalDateTime completionAt) {
         this.paymentUuid = paymentUuid;
         this.auctionUuid = auctionUuid;
         this.paymentMethod = paymentMethod;
-        this.price = price;
         this.paymentNumber = paymentNumber;
         this.paymentStatus = paymentStatus;
-        this.paymentAt = paymentAt;
-        this.paymentCompletionAt = paymentCompletionAt;
+        this.price = price;
+        this.createdAt = createdAt;
+        this.completionAt = completionAt;
     }
 }

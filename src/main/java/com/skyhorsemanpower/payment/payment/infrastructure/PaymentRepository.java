@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
-	Optional<Payment> findByAuctionUuid(String auctionUuid);
+	Optional<Payment> findByAuctionUuidAndMemberUuid(String auctionUuid, String memberUuid);
 
 	List<Payment> findByMemberUuid(String memberUuid);
 
