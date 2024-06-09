@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Tag(name = "결제", description = "결제 관리 API")
 @RequestMapping("/api/v1/payment")
-public class AuthorizationPaymentController {
+public class PaymentController {
 
     private final PaymentService paymentService;
     private final KafkaProducerCluster producer;
