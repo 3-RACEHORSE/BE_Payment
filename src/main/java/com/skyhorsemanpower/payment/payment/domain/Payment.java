@@ -1,6 +1,6 @@
 package com.skyhorsemanpower.payment.payment.domain;
 
-import com.skyhorsemanpower.payment.common.BaseCreateTimeEntity;
+import com.skyhorsemanpower.payment.common.BaseTimeEntity;
 import com.skyhorsemanpower.payment.common.PaymentStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "payment", uniqueConstraints = {
     @UniqueConstraint(name = "payment_uuid_unique", columnNames = {"payment_uuid"})})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Payment extends BaseCreateTimeEntity {
+public class Payment extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,7 +51,7 @@ public class Payment extends BaseCreateTimeEntity {
     public Payment(Long id, String paymentUuid, String auctionUuid, String memberUuid,
         String paymentMethod, String paymentNumber,
         PaymentStatus paymentStatus,
-        BigDecimal price, LocalDateTime paymentCompletionAt) {
+        BigDecimal price, LocalDateTime completionAt) {
         this.id = id;
         this.paymentUuid = paymentUuid;
         this.auctionUuid = auctionUuid;
@@ -60,6 +60,6 @@ public class Payment extends BaseCreateTimeEntity {
         this.paymentNumber = paymentNumber;
         this.paymentStatus = paymentStatus;
         this.price = price;
-        this.completionAt = paymentCompletionAt;
+        this.completionAt = completionAt;
     }
 }
