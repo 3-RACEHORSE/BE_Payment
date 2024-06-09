@@ -15,10 +15,13 @@ import lombok.Setter;
 public class PaymentDetailRequestDto {
 
     private String paymentUuid;
+    private String auctionUuid;
 
-    public static PaymentDetailRequestDto voToDto(PaymentDetailRequestVo paymentDetailRequestVo) {
+    public static PaymentDetailRequestDto voToDto(
+        PaymentDetailRequestVo paymentDetailRequestVo) {
         return PaymentDetailRequestDto.builder()
             .paymentUuid(paymentDetailRequestVo.getPaymentUuid())
+            .auctionUuid(paymentDetailRequestVo.getAuctionUuid())
             .build();
     }
 }

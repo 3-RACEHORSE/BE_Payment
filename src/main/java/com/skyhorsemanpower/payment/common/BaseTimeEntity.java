@@ -7,19 +7,20 @@ import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class BaseCreateTimeEntity {
+public class BaseTimeEntity {
 
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    public BaseCreateTimeEntity() {
-        this.createdAt = LocalDateTime.now(); // 현재 시간으로 설정
-    }
+    @LastModifiedDate
+    @Column
+    private LocalDateTime updatedAt;
 }
