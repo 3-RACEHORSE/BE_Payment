@@ -12,11 +12,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class KafkaProducerCluster {
 
-    private final KafkaTemplate<String, KafkaEntity> kafkaTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    public void sendMessage(String topicName, KafkaEntity kafkaEntity) {
-        CompletableFuture<SendResult<String, KafkaEntity>> future =
-            kafkaTemplate.send(topicName, kafkaEntity);
+    public void sendMessage(String topicName, Object object) {
+        CompletableFuture<SendResult<String, Object>> future =
+            kafkaTemplate.send(topicName, object);
 
         future.whenComplete((result, ex) -> {
             if (ex == null) {
