@@ -34,7 +34,6 @@ public enum ResponseStatus {
     DOSE_NOT_EXIST_PAYMENT(404, "결제내역이 존재하지 않습니다"),
     ALREADY_CANCELED_PAYMENT(400, "이미 취소된 결제입니다."),
     ALREADY_REFUND_PAYMENT(400, "이미 환불된 결제입니다."),
-    PAYMENT_DATA_TRANSFER_FAILED(1003, "결제 정산 정보 전송에 실패하였습니다"),
 
     // Token, Code
     TOKEN_EXPIRED(401, "토큰이 만료되었습니다."),
@@ -73,10 +72,6 @@ public enum ResponseStatus {
      */
     DUPLICATE_REPORT(400, "이미 신고한 내역이 있습니다"),
 
-    /**
-     * Review 수정예정
-     */
-    NO_EXIST_REVIEW(5001, "존재하지 않는 리뷰 입니다"),
 
     /**
      * Category Service Error 
