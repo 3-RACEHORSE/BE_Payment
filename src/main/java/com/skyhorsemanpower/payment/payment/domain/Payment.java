@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,7 +46,7 @@ public class Payment extends BaseTimeEntity {
     @Column(name = "price", nullable = false, length = 100)
     private BigDecimal price;
     @Column(name = "completion_at", nullable = true, length = 100)
-    private LocalDateTime completionAt;
+    private String completionAt;
 
     @Builder
     public Payment(Long id, String paymentUuid, String auctionUuid, String memberUuid,
@@ -60,6 +61,6 @@ public class Payment extends BaseTimeEntity {
         this.paymentNumber = paymentNumber;
         this.paymentStatus = paymentStatus;
         this.price = price;
-        this.completionAt = completionAt;
+        this.completionAt = completionAt.format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));;
     }
 }
