@@ -21,18 +21,9 @@ public class BaseTimeEntity {
 
     @CreatedDate
     @Column(name = "create_at", updatable = false)
-    private String createdAt;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at")
-    private String updatedAt;
-
-    @PrePersist
-    public void onPrePersist(){
-        this.createdAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
-        this.updatedAt = this.createdAt;
-    }
-    @PreUpdate
-    public void onPreUpdate(){
-        this.updatedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));}
+    private LocalDateTime updatedAt;
 }
