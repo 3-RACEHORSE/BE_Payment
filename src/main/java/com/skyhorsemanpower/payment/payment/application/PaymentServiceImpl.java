@@ -13,7 +13,9 @@ import com.skyhorsemanpower.payment.payment.dto.PaymentDetailResponseDto;
 import com.skyhorsemanpower.payment.payment.dto.PaymentListResponseDto;
 import com.skyhorsemanpower.payment.payment.infrastructure.PaymentRepository;
 import com.skyhorsemanpower.payment.payment.vo.PaymentReadyVo;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,12 +35,15 @@ public class PaymentServiceImpl implements PaymentService {
 
     //paymentUuid 생성
     private String createPaymentUuid() {
-        String character = "0123456789";
+        String character = "0123456789abcdefghijklmnopqrstuvwxyz";
         StringBuilder paymentUuid = new StringBuilder();
         Random random = new Random();
+        paymentUuid.append(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        paymentUuid.append("-");
         for (int i = 0; i < 9; i++) {
             paymentUuid.append(character.charAt(random.nextInt(character.length())));
         }
+
         return paymentUuid.toString();
     }
 
@@ -84,7 +89,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .paymentMethod(paymentAddRequestDto.getPaymentMethod())
                 .paymentNumber(paymentAddRequestDto.getPaymentNumber())
                 .paymentStatus(PaymentStatus.COMPLETE)
-                .price(pendingPayment.getPrice())
+                .paidPrice(paymentAddRequestDto.getPaidPrice())
                 //Todo: 클라이언트(서드파티 모듈)에서 결제완료 시간 준다면 그걸로 수정
                 .completionAt(LocalDateTime.now())
                 .build();
@@ -110,7 +115,7 @@ public class PaymentServiceImpl implements PaymentService {
         return firstDigit + maskedRest;
     }
 
-    private Payment getPendingPayment(String auctionUuid, String memberUuid) {
+    private Payment getPendingPayment(String memberUuid, String auctionUuid) {
         Optional<Payment> paymentOpt = this.paymentRepository.findByAuctionUuidAndMemberUuid(
             auctionUuid, memberUuid);
         if (paymentOpt.isEmpty()) {

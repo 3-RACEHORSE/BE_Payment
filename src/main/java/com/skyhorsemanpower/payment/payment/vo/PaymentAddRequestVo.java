@@ -8,6 +8,6 @@ public class PaymentAddRequestVo {
 
     private String auctionUuid;
     private String paymentMethod;
-    private BigDecimal price;
+    private BigDecimal paidPrice;
     private String paymentNumber;
 }
