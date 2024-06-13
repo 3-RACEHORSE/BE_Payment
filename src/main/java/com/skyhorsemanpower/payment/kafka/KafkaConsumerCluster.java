@@ -51,7 +51,7 @@ public class KafkaConsumerCluster {
             .map(PaymentListResponseDto::getMemberUuid).toList();
 
         producer.sendMessage(Topics.NOTIFICATION_SERVICE.getTopic(), AlarmDto.builder()
-            .memberUuids(memberUuids)
+            .receiverUuids(memberUuids)
             .eventType("payment")
             .message("행사 시작까지 24시간 남았어요.").build());
     }
