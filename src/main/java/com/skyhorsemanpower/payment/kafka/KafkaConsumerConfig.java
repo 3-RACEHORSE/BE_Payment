@@ -1,4 +1,4 @@
-package com.skyhorsemanpower.payment.common.kafka;
+package com.skyhorsemanpower.payment.kafka;
 
 import java.util.HashMap;
 import java.util.Map;

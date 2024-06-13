@@ -1,8 +1,9 @@
-package com.skyhorsemanpower.payment.common.kafka;
+package com.skyhorsemanpower.payment.kafka;
 
 import com.skyhorsemanpower.payment.payment.application.PaymentService;
 import com.skyhorsemanpower.payment.payment.vo.PaymentReadyVo;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class KafkaConsumerCluster {
     private final PaymentService paymentService;
 
     @KafkaListener(topics = "${spring.kafka.template.default-topic}", groupId = "${spring.kafka.consumer.group-id}")
-    public void consume(@Payload LinkedHashMap<String, Object> message,
+    public void consumeBidder(@Payload LinkedHashMap<String, Object> message,
         @Headers MessageHeaders messageHeaders) {
         log.info("consumer: success >>> message: {}, headers: {}", message.toString(),
             messageHeaders);

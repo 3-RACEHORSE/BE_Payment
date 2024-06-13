@@ -1,7 +1,7 @@
 package com.skyhorsemanpower.payment.payment.presentation;
 
 import com.skyhorsemanpower.payment.common.SuccessResponse;
-import com.skyhorsemanpower.payment.common.kafka.KafkaProducerCluster;
+import com.skyhorsemanpower.payment.kafka.KafkaProducerCluster;
 import com.skyhorsemanpower.payment.payment.application.PaymentService;
 import com.skyhorsemanpower.payment.payment.dto.PaymentAddRequestDto;
 import com.skyhorsemanpower.payment.payment.dto.PaymentDetailRequestDto;
