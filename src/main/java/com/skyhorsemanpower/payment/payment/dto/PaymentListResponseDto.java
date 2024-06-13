@@ -19,9 +19,13 @@ public class PaymentListResponseDto {
 
     private String paymentUuid;
     private String auctionUuid;
-    private BigDecimal price;
+    private String memberUuid;
+    private String paymentMethod;
+    private String paymentNumber;
     private PaymentStatus paymentStatus;
-    private LocalDateTime paymentAt;
+    private BigDecimal price;
+    private BigDecimal amountPaid;
+    private LocalDateTime completionAt;
 
     public static PaymentListResponseVo dtoToVo(PaymentListResponseDto paymentListResponseDto) {
         return new PaymentListResponseVo(
@@ -29,7 +33,8 @@ public class PaymentListResponseDto {
             paymentListResponseDto.getAuctionUuid(),
             paymentListResponseDto.getPrice(),
             paymentListResponseDto.getPaymentStatus(),
-            paymentListResponseDto.getPaymentAt());
+            paymentListResponseDto.getPaymentNumber(),
+            paymentListResponseDto.getCompletionAt());
     }
 
 }

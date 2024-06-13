@@ -23,6 +23,7 @@ public class PaymentDetailResponseDto {
     private String paymentNumber;
     private PaymentStatus paymentStatus;
     private BigDecimal price;
+    private BigDecimal amountPaid;
     private LocalDateTime createdAt;
     private LocalDateTime completionAt;
 
@@ -36,6 +37,7 @@ public class PaymentDetailResponseDto {
             paymentDetailResponseDto.getPaymentNumber(),
             paymentDetailResponseDto.getPaymentStatus(),
             paymentDetailResponseDto.getPrice(),
+            paymentDetailResponseDto.getAmountPaid(),
             paymentDetailResponseDto.getCreatedAt(),
             paymentDetailResponseDto.getCompletionAt()
         );
