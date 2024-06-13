@@ -1,5 +1,6 @@
 package com.skyhorsemanpower.payment.payment.infrastructure;
 
+import com.skyhorsemanpower.payment.common.PaymentStatus;
 import com.skyhorsemanpower.payment.payment.domain.Payment;
 import java.util.List;
 import java.util.Optional;
@@ -15,5 +16,5 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
 	Optional<Payment> findByPaymentUuid(String paymentUuid);
 
-	Optional<Payment> findByMemberUuidAndPaymentUuid(String memberUuid, String paymentUuid);
+	List<Payment> findByAuctionUuidAndPaymentStatus (String auctionUUid, PaymentStatus paymentStatus);
 }

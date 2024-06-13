@@ -131,13 +131,13 @@ public class PaymentServiceImpl implements PaymentService {
         return firstDigit + maskedRest;
     }
 
-    //결제 리스트 조회
+    //회원의 결제 리스트 조회
     @Override
     @Transactional(readOnly = true)
-    public List<PaymentListResponseDto> findPaymentList(String uuid) {
+    public List<PaymentListResponseDto> findPaymentList(String memberUuid) {
         List<PaymentListResponseDto> paymentListResponseDtoList = new ArrayList<>();
         try {
-            List<Payment> paymentList = paymentRepository.findByMemberUuid(uuid);
+            List<Payment> paymentList = paymentRepository.findByMemberUuid(memberUuid);
             if (paymentList.isEmpty()) {
                 return paymentListResponseDtoList;
             }
@@ -145,9 +145,12 @@ public class PaymentServiceImpl implements PaymentService {
                 PaymentListResponseDto paymentListResponseDto = PaymentListResponseDto.builder()
                     .paymentUuid(payment.getPaymentUuid())
                     .auctionUuid(payment.getAuctionUuid())
-                    .price(payment.getPrice())
+                    .paymentMethod(payment.getPaymentMethod())
+                    .paymentNumber(maskPaymentNumber(payment.getPaymentNumber()))
                     .paymentStatus(payment.getPaymentStatus())
-                    .paymentAt(payment.getCreatedAt())
+                    .price(payment.getPrice())
+                    .amountPaid(payment.getAmountPaid())
+                    .completionAt(payment.getCreatedAt())
                     .build();
                 paymentListResponseDtoList.add(paymentListResponseDto);
             }
@@ -189,8 +192,48 @@ public class PaymentServiceImpl implements PaymentService {
             .paymentNumber(maskPaymentNumber(payment.getPaymentNumber()))
             .paymentStatus(payment.getPaymentStatus())
             .price(payment.getPrice())
+            .amountPaid(payment.getAmountPaid())
             .createdAt(payment.getCreatedAt())
             .completionAt(payment.getCompletionAt())
             .build();
+    }
+
+    @Override
+    public List<PaymentListResponseDto> findCompletePayments(String auctionUuid) {
+        List<PaymentListResponseDto> paymentListResponseDtoList = new ArrayList<>();
+        try {
+            List<Payment> payments = getCompletedPayments(auctionUuid);
+            if (payments.isEmpty()) {
+                return paymentListResponseDtoList;
+            }
+            for (Payment payment : payments) {
+                paymentListResponseDtoList.add(
+                    PaymentListResponseDto.builder()
+                        .paymentUuid(payment.getPaymentUuid())
+                        .memberUuid(payment.getMemberUuid())
+                        .paymentMethod(payment.getPaymentMethod())
+                        .paymentNumber(maskPaymentNumber(payment.getPaymentNumber()))
+                        .paymentStatus(payment.getPaymentStatus())
+                        .price(payment.getPrice())
+                        .amountPaid(payment.getAmountPaid())
+                        .completionAt(payment.getCompletionAt())
+                        .build()
+                );
+            }
+            return paymentListResponseDtoList;
+        } catch (Exception e) {
+            log.info("findCompletePayments error message: {}", e.getMessage());
+            throw new CustomException(ResponseStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private List<Payment> getCompletedPayments(String auctionUuid) {
+        try {
+            return paymentRepository.findByAuctionUuidAndPaymentStatus(
+                auctionUuid, PaymentStatus.COMPLETE);
+        } catch (Exception e) {
+            log.info("findByAuctionUuidAndPaymentStatus error message: {}", e.getMessage());
+            throw new CustomException(ResponseStatus.DATABASE_READ_FAIL);
+        }
     }
 }
