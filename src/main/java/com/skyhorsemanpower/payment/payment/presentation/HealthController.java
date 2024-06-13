@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping
 public class HealthController {
 
-    @GetMapping
+    @GetMapping("/health")
     public SuccessResponse<Object> healthCheck() {
         return new SuccessResponse<>(true);
     }
