@@ -1,5 +1,6 @@
 package com.skyhorsemanpower.payment.common;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
@@ -18,16 +19,6 @@ public class GenerateRandom {
         return sb.toString();
     }
 
-    private static String createUuid() {
-        String character = "0123456789";
-        StringBuilder uuid = new StringBuilder("");
-        Random random = new Random();
-        for (int i = 0; i < 9; i++) {
-            uuid.append(character.charAt(random.nextInt(character.length())));
-        }
-        return uuid.toString();
-    }
-
     public static String auctionUuid() {
         return String.format("%s-%s",
             LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm")),
@@ -35,7 +26,16 @@ public class GenerateRandom {
     }
 
     public static String paymentUuid() {
-        return createUuid();
+        String character = "0123456789abcdefghijklmnopqrstuvwxyz";
+        StringBuilder paymentUuid = new StringBuilder();
+        Random random = new Random();
+        paymentUuid.append(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        paymentUuid.append("-");
+        for (int i = 0; i < 9; i++) {
+            paymentUuid.append(character.charAt(random.nextInt(character.length())));
+        }
+
+        return paymentUuid.toString();
     }
 
     public static String memberUuid() {
