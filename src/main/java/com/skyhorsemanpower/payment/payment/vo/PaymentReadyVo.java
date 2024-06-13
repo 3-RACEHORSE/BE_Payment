@@ -1,6 +1,7 @@
 package com.skyhorsemanpower.payment.payment.vo;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +19,7 @@ public class PaymentReadyVo {
     private List<String> memberUuids;
     private BigDecimal price;
 
-    public static boolean  validate(PaymentReadyVo vo) {
+    public static boolean validate(PaymentReadyVo vo) {
         return vo.getAuctionUuid() != null && !vo.getAuctionUuid().isEmpty()
             && vo.getPrice() != null && vo.getMemberUuids() != null;
     }

@@ -1,4 +1,4 @@
-package com.skyhorsemanpower.payment.common.kafka;
+package com.skyhorsemanpower.payment.kafka.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

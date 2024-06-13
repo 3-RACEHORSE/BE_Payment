@@ -3,7 +3,10 @@ package com.skyhorsemanpower.payment.common;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -17,10 +20,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class BaseTimeEntity {
 
     @CreatedDate
-    @Column(updatable = false)
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column
-    private LocalDateTime updatedAt;
 }

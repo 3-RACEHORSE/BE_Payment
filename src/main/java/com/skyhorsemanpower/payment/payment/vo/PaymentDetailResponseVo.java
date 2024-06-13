@@ -14,6 +14,7 @@ public class PaymentDetailResponseVo {
     private String paymentNumber;
     private PaymentStatus paymentStatus;
     private BigDecimal price;
+    private BigDecimal amountPaid;
     private LocalDateTime createdAt;
     private LocalDateTime completionAt;
 
@@ -24,6 +25,7 @@ public class PaymentDetailResponseVo {
         String paymentNumber,
         PaymentStatus paymentStatus,
         BigDecimal price,
+        BigDecimal amountPaid,
         LocalDateTime createdAt,
         LocalDateTime completionAt) {
         this.paymentUuid = paymentUuid;
@@ -32,6 +34,7 @@ public class PaymentDetailResponseVo {
         this.paymentNumber = paymentNumber;
         this.paymentStatus = paymentStatus;
         this.price = price;
+        this.amountPaid = amountPaid;
         this.createdAt = createdAt;
         this.completionAt = completionAt;
     }

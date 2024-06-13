@@ -12,14 +12,16 @@ public class PaymentListResponseVo {
     private String auctionUuid;
     private BigDecimal price;
     private PaymentStatus paymentStatus;
-    private LocalDateTime paymentAt;
+    private String paymentNumber;
+    private LocalDateTime completionAt;
 
     public PaymentListResponseVo(String paymentUuid, String auctionUuid, BigDecimal price,
-        PaymentStatus paymentStatus, LocalDateTime paymentAt) {
+        PaymentStatus paymentStatus, String paymentNumber, LocalDateTime completionAt) {
         this.paymentUuid = paymentUuid;
         this.auctionUuid = auctionUuid;
         this.price = price;
         this.paymentStatus = paymentStatus;
-        this.paymentAt = paymentAt;
+        this.paymentNumber = paymentNumber;
+        this.completionAt = completionAt;
     }
 }

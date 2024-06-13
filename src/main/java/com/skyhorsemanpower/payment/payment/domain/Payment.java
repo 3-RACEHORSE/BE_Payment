@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,7 +30,7 @@ public class Payment extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "payment_id")
     private Long id;
-    @Column(name = "payment_uuid", nullable = false, unique = true, length = 9)
+    @Column(name = "payment_uuid", nullable = false, unique = true, length = 18)
     private String paymentUuid;
     @Column(name = "auction_uuid", nullable = false, length = 23)
     private String auctionUuid;
@@ -44,6 +45,8 @@ public class Payment extends BaseTimeEntity {
     private PaymentStatus paymentStatus;
     @Column(name = "price", nullable = false, length = 100)
     private BigDecimal price;
+    @Column(name = "amount_paid", nullable = true, length = 100)
+    private BigDecimal amountPaid;
     @Column(name = "completion_at", nullable = true, length = 100)
     private LocalDateTime completionAt;
 
@@ -51,7 +54,7 @@ public class Payment extends BaseTimeEntity {
     public Payment(Long id, String paymentUuid, String auctionUuid, String memberUuid,
         String paymentMethod, String paymentNumber,
         PaymentStatus paymentStatus,
-        BigDecimal price, LocalDateTime completionAt) {
+        BigDecimal price, BigDecimal amountPaid, LocalDateTime completionAt) {
         this.id = id;
         this.paymentUuid = paymentUuid;
         this.auctionUuid = auctionUuid;
@@ -60,6 +63,7 @@ public class Payment extends BaseTimeEntity {
         this.paymentNumber = paymentNumber;
         this.paymentStatus = paymentStatus;
         this.price = price;
+        this.amountPaid = amountPaid;
         this.completionAt = completionAt;
     }
 }
