@@ -1,9 +1,10 @@
 package com.skyhorsemanpower.payment.kafka;
 
+import com.skyhorsemanpower.payment.kafka.dto.AlarmDto;
 import com.skyhorsemanpower.payment.payment.application.PaymentService;
+import com.skyhorsemanpower.payment.payment.dto.PaymentListResponseDto;
 import com.skyhorsemanpower.payment.payment.vo.PaymentReadyVo;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +21,9 @@ import org.springframework.stereotype.Component;
 public class KafkaConsumerCluster {
 
     private final PaymentService paymentService;
+    private final KafkaProducerCluster producer;
 
-    @KafkaListener(topics = "${spring.kafka.template.default-topic}", groupId = "${spring.kafka.consumer.group-id}")
+    @KafkaListener(topics = "successful-bid-topic", groupId = "${spring.kafka.consumer.group-id}")
     public void consumeBidder(@Payload LinkedHashMap<String, Object> message,
         @Headers MessageHeaders messageHeaders) {
         log.info("consumer: success >>> message: {}, headers: {}", message.toString(),
@@ -35,8 +37,22 @@ public class KafkaConsumerCluster {
             .build();
 
         log.info("consumer: success >>> paymentReadyVo: {}", paymentReadyVo.toString());
-        
+
         paymentService.createPayment(paymentReadyVo);
     }
 
+    @KafkaListener(topics = "event-preview-topic", groupId = "${spring.kafka.consumer.group-id}")
+    public void consumeEventPreview(@Payload LinkedHashMap<String, Object> message,
+        @Headers MessageHeaders messageHeaders) {
+        String auctionUuid = message.get("auctionUuid").toString();
+        List<PaymentListResponseDto> paymentListResponseDtos = paymentService.findCompletePayments(
+            auctionUuid);
+        List<String> memberUuids = paymentListResponseDtos.stream()
+            .map(PaymentListResponseDto::getMemberUuid).toList();
+
+        producer.sendMessage(Topics.NOTIFICATION_SERVICE.getTopic(), AlarmDto.builder()
+            .memberUuids(memberUuids)
+            .eventType("payment")
+            .message("행사 시작까지 24시간 남았어요.").build());
+    }
 }
