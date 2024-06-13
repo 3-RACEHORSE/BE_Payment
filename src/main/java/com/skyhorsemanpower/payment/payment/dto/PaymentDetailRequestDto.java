@@ -14,11 +14,14 @@ import lombok.Setter;
 @Builder
 public class PaymentDetailRequestDto {
 
-	private String paymentUuid;
+    private String paymentUuid;
+    private String auctionUuid;
 
-	public static PaymentDetailRequestDto voToDto(PaymentDetailRequestVo paymentDetailRequestVo) {
-		return PaymentDetailRequestDto.builder()
-			.paymentUuid(paymentDetailRequestVo.getPaymentUuid())
-			.build();
-	}
+    public static PaymentDetailRequestDto voToDto(
+        PaymentDetailRequestVo paymentDetailRequestVo) {
+        return PaymentDetailRequestDto.builder()
+            .paymentUuid(paymentDetailRequestVo.getPaymentUuid())
+            .auctionUuid(paymentDetailRequestVo.getAuctionUuid())
+            .build();
+    }
 }

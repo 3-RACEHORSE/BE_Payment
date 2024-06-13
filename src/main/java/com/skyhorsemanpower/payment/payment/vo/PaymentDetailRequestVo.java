@@ -5,5 +5,6 @@ import lombok.Getter;
 @Getter
 public class PaymentDetailRequestVo {
 
-	private String paymentUuid;
+    private String paymentUuid; //null 가능
+    private String auctionUuid;
 }

@@ -1,6 +1,7 @@
 package com.skyhorsemanpower.payment.payment.dto;
 
 import com.skyhorsemanpower.payment.payment.vo.PaymentAddRequestVo;
+import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,17 +15,17 @@ import lombok.Setter;
 @Builder
 public class PaymentAddRequestDto {
 
-	private String auctionUuid;
-	private String paymentMethod;
-	private int price;
-	private String paymentNumber;
+    private String auctionUuid;
+    private String paymentMethod;
+    private BigDecimal amountPaid;
+    private String paymentNumber;
 
-	public static PaymentAddRequestDto voToDto(PaymentAddRequestVo paymentAddRequestVo) {
-		return PaymentAddRequestDto.builder()
-			.auctionUuid(paymentAddRequestVo.getAuctionUuid())
-			.paymentMethod(paymentAddRequestVo.getPaymentMethod())
-			.price(paymentAddRequestVo.getPrice())
-			.paymentNumber(paymentAddRequestVo.getPaymentNumber())
-			.build();
-	}
+    public static PaymentAddRequestDto voToDto(PaymentAddRequestVo paymentAddRequestVo) {
+        return PaymentAddRequestDto.builder()
+            .auctionUuid(paymentAddRequestVo.getAuctionUuid())
+            .paymentMethod(paymentAddRequestVo.getPaymentMethod())
+            .amountPaid(paymentAddRequestVo.getAmountPaid())
+            .paymentNumber(paymentAddRequestVo.getPaymentNumber())
+            .build();
+    }
 }

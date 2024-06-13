@@ -2,6 +2,7 @@ package com.skyhorsemanpower.payment.payment.dto;
 
 import com.skyhorsemanpower.payment.common.PaymentStatus;
 import com.skyhorsemanpower.payment.payment.vo.PaymentListResponseVo;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,19 +17,24 @@ import lombok.Setter;
 @Builder
 public class PaymentListResponseDto {
 
-	private String paymentUuid;
-	private String auctionUuid;
-	private int price;
-	private PaymentStatus paymentStatus;
-	private LocalDateTime paymentAt;
+    private String paymentUuid;
+    private String auctionUuid;
+    private String memberUuid;
+    private String paymentMethod;
+    private String paymentNumber;
+    private PaymentStatus paymentStatus;
+    private BigDecimal price;
+    private BigDecimal amountPaid;
+    private LocalDateTime completionAt;
 
-	public static PaymentListResponseVo dtoToVo(PaymentListResponseDto paymentListResponseDto) {
-		return new PaymentListResponseVo(
-			paymentListResponseDto.getPaymentUuid(),
-			paymentListResponseDto.getAuctionUuid(),
-			paymentListResponseDto.getPrice(),
-			paymentListResponseDto.getPaymentStatus(),
-			paymentListResponseDto.getPaymentAt());
-	}
+    public static PaymentListResponseVo dtoToVo(PaymentListResponseDto paymentListResponseDto) {
+        return new PaymentListResponseVo(
+            paymentListResponseDto.getPaymentUuid(),
+            paymentListResponseDto.getAuctionUuid(),
+            paymentListResponseDto.getPrice(),
+            paymentListResponseDto.getPaymentStatus(),
+            paymentListResponseDto.getPaymentNumber(),
+            paymentListResponseDto.getCompletionAt());
+    }
 
 }
