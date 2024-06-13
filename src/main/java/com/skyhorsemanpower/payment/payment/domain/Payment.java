@@ -45,8 +45,8 @@ public class Payment extends BaseTimeEntity {
     private PaymentStatus paymentStatus;
     @Column(name = "price", nullable = false, length = 100)
     private BigDecimal price;
-    @Column(name = "paid_price", nullable = true, length = 100)
-    private BigDecimal paidPrice;
+    @Column(name = "amount_paid", nullable = true, length = 100)
+    private BigDecimal amountPaid;
     @Column(name = "completion_at", nullable = true, length = 100)
     private LocalDateTime completionAt;
 
@@ -54,7 +54,7 @@ public class Payment extends BaseTimeEntity {
     public Payment(Long id, String paymentUuid, String auctionUuid, String memberUuid,
         String paymentMethod, String paymentNumber,
         PaymentStatus paymentStatus,
-        BigDecimal price, BigDecimal paidPrice, LocalDateTime completionAt) {
+        BigDecimal price, BigDecimal amountPaid, LocalDateTime completionAt) {
         this.id = id;
         this.paymentUuid = paymentUuid;
         this.auctionUuid = auctionUuid;
@@ -63,7 +63,7 @@ public class Payment extends BaseTimeEntity {
         this.paymentNumber = paymentNumber;
         this.paymentStatus = paymentStatus;
         this.price = price;
-        this.paidPrice = paidPrice;
+        this.amountPaid = amountPaid;
         this.completionAt = completionAt;
     }
 }
