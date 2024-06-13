@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class AlarmDto {
-    private List<String> memberUuids;
+    private List<String> receiverUuids;
     private String eventType;
     private String message;
 }
