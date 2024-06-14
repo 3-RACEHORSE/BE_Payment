@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
 
     @Bean
-    public OpenAPI openAPI() {
+    public OpenAPI openAPI(@Value("${openapi.service.url}") String url) {
         SecurityScheme securityScheme = new SecurityScheme().type(SecurityScheme.Type.HTTP)
             .scheme("bearer").bearerFormat("JWT").in(SecurityScheme.In.HEADER)
             .name("Authorization");
@@ -30,6 +30,6 @@ public class SwaggerConfig {
         return new OpenAPI()
             .components(new Components().addSecuritySchemes("bearerAuth", securityScheme))
             .security(Arrays.asList(securityRequirement))
-            .addServersItem(new Server().url("/"));
+            .addServersItem(new Server().url(url));
     }
 }
