@@ -33,7 +33,7 @@ public class KafkaConsumerCluster {
         PaymentReadyVo paymentReadyVo = PaymentReadyVo.builder()
                 .auctionUuid(message.get("auctionUuid").toString())
                 .memberUuids((List<String>) message.get("memberUuids"))
-                .price(BigDecimal.valueOf((Integer) message.get("price")))
+                .price(new BigDecimal(message.get("price").toString()))
                 .build();
 
         log.info("consumer: success >>> paymentReadyVo: {}", paymentReadyVo.toString());
