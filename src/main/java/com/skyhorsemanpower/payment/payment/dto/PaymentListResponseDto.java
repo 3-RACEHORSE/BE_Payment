@@ -18,6 +18,7 @@ import lombok.Setter;
 public class PaymentListResponseDto {
 
     private String paymentUuid;
+    private String impUid;
     private String auctionUuid;
     private String memberUuid;
     private String paymentMethod;
@@ -30,6 +31,7 @@ public class PaymentListResponseDto {
     public static PaymentListResponseVo dtoToVo(PaymentListResponseDto paymentListResponseDto) {
         return new PaymentListResponseVo(
             paymentListResponseDto.getPaymentUuid(),
+            paymentListResponseDto.getImpUid(),
             paymentListResponseDto.getAuctionUuid(),
             paymentListResponseDto.getPrice(),
             paymentListResponseDto.getPaymentStatus(),

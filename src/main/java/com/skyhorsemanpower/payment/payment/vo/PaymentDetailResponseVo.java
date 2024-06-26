@@ -9,6 +9,7 @@ import lombok.Getter;
 public class PaymentDetailResponseVo {
 
     private String paymentUuid;
+    private String impUid;
     private String auctionUuid;
     private String paymentMethod;
     private String paymentNumber;
@@ -20,6 +21,7 @@ public class PaymentDetailResponseVo {
 
     public PaymentDetailResponseVo(
         String paymentUuid,
+        String impUid,
         String auctionUuid,
         String paymentMethod,
         String paymentNumber,
@@ -29,6 +31,7 @@ public class PaymentDetailResponseVo {
         LocalDateTime createdAt,
         LocalDateTime completionAt) {
         this.paymentUuid = paymentUuid;
+        this.impUid = impUid;
         this.auctionUuid = auctionUuid;
         this.paymentMethod = paymentMethod;
         this.paymentNumber = paymentNumber;

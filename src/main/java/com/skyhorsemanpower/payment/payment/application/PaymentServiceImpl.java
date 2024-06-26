@@ -3,6 +3,8 @@ package com.skyhorsemanpower.payment.payment.application;
 import com.skyhorsemanpower.payment.common.PaymentStatus;
 import com.skyhorsemanpower.payment.common.exception.CustomException;
 import com.skyhorsemanpower.payment.common.exception.ResponseStatus;
+import com.skyhorsemanpower.payment.iamport.IamportService;
+import com.skyhorsemanpower.payment.iamport.dto.PaymentInfoDto;
 import com.skyhorsemanpower.payment.kafka.KafkaProducerCluster;
 import com.skyhorsemanpower.payment.kafka.Topics;
 import com.skyhorsemanpower.payment.payment.domain.Payment;
@@ -32,6 +34,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final KafkaProducerCluster producer;
+    private final IamportService iamportService;
 
     //paymentUuid 생성
     private String createPaymentUuid() {
@@ -75,17 +78,22 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     public void savePayment(String memberUuid, String impUid, PaymentAddRequestDto paymentAddRequestDto) {
         try {
-            //결제 대기 상태인 Payment 엔티티 조회
             Payment pendingPayment = getPendingPayment(memberUuid,
                 paymentAddRequestDto.getAuctionUuid());
 
-            //컬럼이 null인 필드만 요청 값으로 채움
+            PaymentInfoDto paymentInfoDto = iamportService.getPaymentInfo(impUid);
+
             Payment payment = Payment.builder()
                 .id(pendingPayment.getId())
                 .paymentUuid(pendingPayment.getPaymentUuid())
+                .impUid(impUid)
                 .auctionUuid(pendingPayment.getAuctionUuid())
-                .memberUuid(pendingPayment.getMemberUuid())
+                .memberUuid(memberUuid)
+                .paymentMethod(paymentInfoDto.getPayMethod())
+                .paymentNumber(paymentInfoDto.getPayNumber())
                 .paymentStatus(PaymentStatus.COMPLETE)
+                .price(pendingPayment.getPrice())
+                .amountPaid(paymentInfoDto.getAmount())
                 .completionAt(LocalDateTime.now())
                 .build();
 
@@ -138,6 +146,7 @@ public class PaymentServiceImpl implements PaymentService {
             for (Payment payment : paymentList) {
                 PaymentListResponseDto paymentListResponseDto = PaymentListResponseDto.builder()
                     .paymentUuid(payment.getPaymentUuid())
+                    .impUid(payment.getImpUid())
                     .auctionUuid(payment.getAuctionUuid())
                     .paymentMethod(payment.getPaymentMethod())
                     .paymentNumber(maskPaymentNumber(payment.getPaymentNumber()))
@@ -181,6 +190,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         return PaymentDetailResponseDto.builder()
             .paymentUuid(payment.getPaymentUuid())
+            .impUid(payment.getImpUid())
             .auctionUuid(payment.getAuctionUuid())
             .paymentMethod(payment.getPaymentMethod())
             .paymentNumber(maskPaymentNumber(payment.getPaymentNumber()))
@@ -204,6 +214,7 @@ public class PaymentServiceImpl implements PaymentService {
                 paymentListResponseDtoList.add(
                     PaymentListResponseDto.builder()
                         .paymentUuid(payment.getPaymentUuid())
+                        .impUid(payment.getImpUid())
                         .memberUuid(payment.getMemberUuid())
                         .paymentMethod(payment.getPaymentMethod())
                         .paymentNumber(maskPaymentNumber(payment.getPaymentNumber()))

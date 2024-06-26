@@ -3,7 +3,6 @@ package com.skyhorsemanpower.payment.iamport;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.ws.rs.ext.ParamConverter.Lazy;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -21,7 +20,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class IamportTokenProvider {
 
-    private static final String IMPORT_TOKEN_URL = "https://api.iamport.kr/users/getToken";
+    private static final String IAMPORT_TOKEN_URL = "https://api.iamport.kr/users/getToken";
 
     @Value("${imp_key}")
     private String KEY;
@@ -33,26 +32,24 @@ public class IamportTokenProvider {
         Map<String, String> body = new HashMap<>();
         body.put("imp_key", KEY);
         body.put("imp_secret", SECRET);
-
         try {
             ObjectMapper mapper = new ObjectMapper();
             String jsonBody = mapper.writeValueAsString(body);
 
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(IMPORT_TOKEN_URL))
+                .uri(URI.create(IAMPORT_TOKEN_URL))
                 .header("Content-Type", "application/json")
                 .POST(BodyPublishers.ofString(jsonBody))
                 .build();
 
             HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
             String responseBody = response.body();
-            log.info("key: {}, secret: {}, responseBody: {}", KEY, SECRET, responseBody);
             JsonNode rootNode = mapper.readTree(responseBody);
             JsonNode resNode = rootNode.get("response");
             return resNode.get("access_token").asText();
         } catch (InterruptedException | IOException | RuntimeException e) {
-            log.info("getIamportToken error{}", e.getMessage());
+            log.info("getIamportToken error: {}", e.getMessage());
             return null;
         }
     }
