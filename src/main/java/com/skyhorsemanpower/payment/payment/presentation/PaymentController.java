@@ -39,8 +39,9 @@ public class PaymentController {
     public SuccessResponse<Object> savePayment(
         @RequestHeader String token,
         @RequestHeader String uuid,
+        @RequestHeader String impUid,
         @RequestBody PaymentAddRequestVo paymentAddRequestVo) {
-        paymentService.savePayment(uuid, PaymentAddRequestDto.voToDto(paymentAddRequestVo));
+        paymentService.savePayment(uuid, impUid, PaymentAddRequestDto.voToDto(paymentAddRequestVo));
         return new SuccessResponse<>(null);
     }
 
