@@ -65,13 +65,13 @@ public class IamportServiceImpl implements IamportService {
 
         String payMethod = "etc";
         String payNumber = "etc";
-        if (bankCode != null && bankName != null) {
+        if (!bankCode.isNull() && !bankName.isNull()) {
             payMethod = bankName.asText();
             payNumber = bankCode.asText();
-        } else if (cardCode != null && cardName != null) {
+        } else if (!cardCode.isNull() && !cardName.isNull()) {
             payMethod = cardName.asText();
             payNumber = cardCode.asText();
-        } else if (vbankCode != null && vbankName != null) {
+        } else if (!vbankCode.isNull() && !vbankName.isNull()) {
             payMethod = vbankName.asText();
             payNumber = vbankCode.asText();
         }
