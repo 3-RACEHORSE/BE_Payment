@@ -57,12 +57,12 @@ public class PaymentServiceImpl implements PaymentService {
                 try {
                     String paymentUuid = createPaymentUuid();
                     paymentRepository.save(Payment.builder()
-                            .paymentUuid(paymentUuid)
-                            .auctionUuid(paymentReadyVo.getAuctionUuid())
-                            .memberUuid(memberUuid)
-                            .paymentStatus(PaymentStatus.PENDING)
-                            .price(paymentReadyVo.getPrice())
-                            .build());
+                        .paymentUuid(paymentUuid)
+                        .auctionUuid(paymentReadyVo.getAuctionUuid())
+                        .memberUuid(memberUuid)
+                        .paymentStatus(PaymentStatus.PENDING)
+                        .price(paymentReadyVo.getPrice())
+                        .build());
                 } catch (RuntimeException exception) {
                     log.info("createPayment error message: {}", exception.getMessage());
                     throw new CustomException(ResponseStatus.DATABASE_INSERT_FAIL);
@@ -71,29 +71,23 @@ public class PaymentServiceImpl implements PaymentService {
         }
     }
 
-    //결제
     @Override
     @Transactional
-    public void savePayment(String memberUuid, PaymentAddRequestDto paymentAddRequestDto) {
+    public void savePayment(String memberUuid, String impUid, PaymentAddRequestDto paymentAddRequestDto) {
         try {
             //결제 대기 상태인 Payment 엔티티 조회
             Payment pendingPayment = getPendingPayment(memberUuid,
-                    paymentAddRequestDto.getAuctionUuid());
+                paymentAddRequestDto.getAuctionUuid());
 
             //컬럼이 null인 필드만 요청 값으로 채움
             Payment payment = Payment.builder()
-                    .id(pendingPayment.getId())
-                    .paymentUuid(pendingPayment.getPaymentUuid())
-                    .auctionUuid(pendingPayment.getAuctionUuid())
-                    .memberUuid(pendingPayment.getMemberUuid())
-                    .paymentMethod(paymentAddRequestDto.getPaymentMethod())
-                    .paymentNumber(paymentAddRequestDto.getPaymentNumber())
-                    .paymentStatus(PaymentStatus.COMPLETE)
-                    .amountPaid(paymentAddRequestDto.getAmountPaid())
-                    .price(pendingPayment.getPrice())
-                    //Todo: 클라이언트(서드파티 모듈)에서 결제완료 시간 준다면 그걸로 수정
-                    .completionAt(LocalDateTime.now())
-                    .build();
+                .id(pendingPayment.getId())
+                .paymentUuid(pendingPayment.getPaymentUuid())
+                .auctionUuid(pendingPayment.getAuctionUuid())
+                .memberUuid(pendingPayment.getMemberUuid())
+                .paymentStatus(PaymentStatus.COMPLETE)
+                .completionAt(LocalDateTime.now())
+                .build();
 
             this.paymentRepository.save(payment);
         } catch (RuntimeException exception) {
@@ -103,12 +97,12 @@ public class PaymentServiceImpl implements PaymentService {
 
         //TODO: 재시도 처리, 예외 처리 추가
         this.producer.sendMessage(Topics.Constant.CHAT_SERVICE, PaymentCompleteDto.builder()
-                .memberUuid(memberUuid).build());
+            .memberUuid(memberUuid).build());
     }
 
     private Payment getPendingPayment(String memberUuid, String auctionUuid) {
         Optional<Payment> paymentOpt = this.paymentRepository.findByMemberUuidAndAuctionUuid(
-                memberUuid, auctionUuid);
+            memberUuid, auctionUuid);
         if (paymentOpt.isEmpty()) {
             throw new CustomException(ResponseStatus.DOSE_NOT_EXIST_PAYMENT);
         } else if (paymentOpt.get().getPaymentStatus() == PaymentStatus.COMPLETE) {
@@ -143,15 +137,15 @@ public class PaymentServiceImpl implements PaymentService {
             }
             for (Payment payment : paymentList) {
                 PaymentListResponseDto paymentListResponseDto = PaymentListResponseDto.builder()
-                        .paymentUuid(payment.getPaymentUuid())
-                        .auctionUuid(payment.getAuctionUuid())
-                        .paymentMethod(payment.getPaymentMethod())
-                        .paymentNumber(maskPaymentNumber(payment.getPaymentNumber()))
-                        .paymentStatus(payment.getPaymentStatus())
-                        .price(payment.getPrice())
-                        .amountPaid(payment.getAmountPaid())
-                        .completionAt(payment.getCreatedAt())
-                        .build();
+                    .paymentUuid(payment.getPaymentUuid())
+                    .auctionUuid(payment.getAuctionUuid())
+                    .paymentMethod(payment.getPaymentMethod())
+                    .paymentNumber(maskPaymentNumber(payment.getPaymentNumber()))
+                    .paymentStatus(payment.getPaymentStatus())
+                    .price(payment.getPrice())
+                    .amountPaid(payment.getAmountPaid())
+                    .completionAt(payment.getCreatedAt())
+                    .build();
                 paymentListResponseDtoList.add(paymentListResponseDto);
             }
             return paymentListResponseDtoList;
@@ -168,17 +162,17 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional(readOnly = true)
     public PaymentDetailResponseDto findPaymentDetail(String memberUuid,
-                                                      PaymentDetailRequestDto paymentDetailRequestDto) {
+        PaymentDetailRequestDto paymentDetailRequestDto) {
         Payment payment = null;
 
         if (paymentDetailRequestDto.getPaymentUuid() != null) {
             payment = paymentRepository.findByPaymentUuid(
-                            paymentDetailRequestDto.getPaymentUuid())
-                    .orElseThrow(() -> new CustomException(ResponseStatus.DOSE_NOT_EXIST_PAYMENT));
+                    paymentDetailRequestDto.getPaymentUuid())
+                .orElseThrow(() -> new CustomException(ResponseStatus.DOSE_NOT_EXIST_PAYMENT));
         } else if (paymentDetailRequestDto.getAuctionUuid() != null) {
             payment = paymentRepository.findByMemberUuidAndAuctionUuid(
-                            memberUuid, paymentDetailRequestDto.getAuctionUuid())
-                    .orElseThrow(() -> new CustomException(ResponseStatus.DOSE_NOT_EXIST_PAYMENT));
+                    memberUuid, paymentDetailRequestDto.getAuctionUuid())
+                .orElseThrow(() -> new CustomException(ResponseStatus.DOSE_NOT_EXIST_PAYMENT));
         }
 
         if (payment == null) {
@@ -186,16 +180,16 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         return PaymentDetailResponseDto.builder()
-                .paymentUuid(payment.getPaymentUuid())
-                .auctionUuid(payment.getAuctionUuid())
-                .paymentMethod(payment.getPaymentMethod())
-                .paymentNumber(maskPaymentNumber(payment.getPaymentNumber()))
-                .paymentStatus(payment.getPaymentStatus())
-                .price(payment.getPrice())
-                .amountPaid(payment.getAmountPaid())
-                .createdAt(payment.getCreatedAt())
-                .completionAt(payment.getCompletionAt())
-                .build();
+            .paymentUuid(payment.getPaymentUuid())
+            .auctionUuid(payment.getAuctionUuid())
+            .paymentMethod(payment.getPaymentMethod())
+            .paymentNumber(maskPaymentNumber(payment.getPaymentNumber()))
+            .paymentStatus(payment.getPaymentStatus())
+            .price(payment.getPrice())
+            .amountPaid(payment.getAmountPaid())
+            .createdAt(payment.getCreatedAt())
+            .completionAt(payment.getCompletionAt())
+            .build();
     }
 
     @Override
@@ -208,16 +202,16 @@ public class PaymentServiceImpl implements PaymentService {
             }
             for (Payment payment : payments) {
                 paymentListResponseDtoList.add(
-                        PaymentListResponseDto.builder()
-                                .paymentUuid(payment.getPaymentUuid())
-                                .memberUuid(payment.getMemberUuid())
-                                .paymentMethod(payment.getPaymentMethod())
-                                .paymentNumber(maskPaymentNumber(payment.getPaymentNumber()))
-                                .paymentStatus(payment.getPaymentStatus())
-                                .price(payment.getPrice())
-                                .amountPaid(payment.getAmountPaid())
-                                .completionAt(payment.getCompletionAt())
-                                .build()
+                    PaymentListResponseDto.builder()
+                        .paymentUuid(payment.getPaymentUuid())
+                        .memberUuid(payment.getMemberUuid())
+                        .paymentMethod(payment.getPaymentMethod())
+                        .paymentNumber(maskPaymentNumber(payment.getPaymentNumber()))
+                        .paymentStatus(payment.getPaymentStatus())
+                        .price(payment.getPrice())
+                        .amountPaid(payment.getAmountPaid())
+                        .completionAt(payment.getCompletionAt())
+                        .build()
                 );
             }
             return paymentListResponseDtoList;
@@ -230,7 +224,7 @@ public class PaymentServiceImpl implements PaymentService {
     private List<Payment> getCompletedPayments(String auctionUuid) {
         try {
             return paymentRepository.findByAuctionUuidAndPaymentStatus(
-                    auctionUuid, PaymentStatus.COMPLETE);
+                auctionUuid, PaymentStatus.COMPLETE);
         } catch (Exception e) {
             log.info("findByAuctionUuidAndPaymentStatus error message: {}", e.getMessage());
             throw new CustomException(ResponseStatus.DATABASE_READ_FAIL);

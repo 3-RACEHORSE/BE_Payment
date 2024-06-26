@@ -11,7 +11,7 @@ public interface PaymentService {
 
     void createPayment(PaymentReadyVo paymentReadyVo);
 
-    void savePayment(String uuid, PaymentAddRequestDto paymentAddRequestDto);
+    void savePayment(String uuid, String impUid, PaymentAddRequestDto paymentAddRequestDto);
 
     PaymentDetailResponseDto findPaymentDetail(String uuid,
         PaymentDetailRequestDto paymentDetailRequestDto);
