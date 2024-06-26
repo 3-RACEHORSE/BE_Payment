@@ -18,6 +18,7 @@ import lombok.Setter;
 public class PaymentDetailResponseDto {
 
     private String paymentUuid;
+    private String impUid;
     private String auctionUuid;
     private String paymentMethod;
     private String paymentNumber;
@@ -32,6 +33,7 @@ public class PaymentDetailResponseDto {
     ) {
         return new PaymentDetailResponseVo(
             paymentDetailResponseDto.getPaymentUuid(),
+            paymentDetailResponseDto.getImpUid(),
             paymentDetailResponseDto.getAuctionUuid(),
             paymentDetailResponseDto.getPaymentMethod(),
             paymentDetailResponseDto.getPaymentNumber(),

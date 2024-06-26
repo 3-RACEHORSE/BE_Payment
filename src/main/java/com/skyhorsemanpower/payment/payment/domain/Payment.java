@@ -32,6 +32,8 @@ public class Payment extends BaseTimeEntity {
     private Long id;
     @Column(name = "payment_uuid", nullable = false, unique = true, length = 18)
     private String paymentUuid;
+    @Column(name = "imp_uid", nullable = true, length = 20)
+    private String impUid;
     @Column(name = "auction_uuid", nullable = false, length = 23)
     private String auctionUuid;
     @Column(name = "member_uuid", nullable = false, length = 36)
@@ -51,12 +53,13 @@ public class Payment extends BaseTimeEntity {
     private LocalDateTime completionAt;
 
     @Builder
-    public Payment(Long id, String paymentUuid, String auctionUuid, String memberUuid,
-        String paymentMethod, String paymentNumber,
+    public Payment(Long id, String paymentUuid, String impUid,String auctionUuid,
+        String memberUuid, String paymentMethod, String paymentNumber,
         PaymentStatus paymentStatus,
         BigDecimal price, BigDecimal amountPaid, LocalDateTime completionAt) {
         this.id = id;
         this.paymentUuid = paymentUuid;
+        this.impUid = impUid;
         this.auctionUuid = auctionUuid;
         this.memberUuid = memberUuid;
         this.paymentMethod = paymentMethod;
