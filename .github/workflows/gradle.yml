@@ -87,7 +87,7 @@ jobs:
           sudo docker rm payment-service     
 
       - name: Run new docker container
-        run: sudo docker run -d --restart unless-stopped --name payment-service -p 9004:9004 --net cheonma-network ${{ secrets.DOCKERHUB_USERNAME }}/payment-service:latest
+        run: sudo docker run -d --name payment-service -p 9004:9004 --net cheonma-network ${{ secrets.DOCKERHUB_USERNAME }}/payment-service:latest
 
       - name: Delete old docker image
         run: sudo docker system prune -f
