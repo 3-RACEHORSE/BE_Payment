@@ -1,7 +1,6 @@
 package com.skyhorsemanpower.payment.payment.presentation;
 
 import com.skyhorsemanpower.payment.common.SuccessResponse;
-import com.skyhorsemanpower.payment.kafka.KafkaProducerCluster;
 import com.skyhorsemanpower.payment.payment.application.PaymentService;
 import com.skyhorsemanpower.payment.payment.dto.PaymentAddRequestDto;
 import com.skyhorsemanpower.payment.payment.dto.PaymentDetailRequestDto;
@@ -32,12 +31,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentController {
 
     private final PaymentService paymentService;
-    private final KafkaProducerCluster producer;
 
     @PostMapping
     @Operation(summary = "결제", description = "결제")
     public SuccessResponse<Object> savePayment(
-        @RequestHeader String token,
         @RequestHeader String uuid,
         @RequestHeader String impUid,
         @RequestBody PaymentAddRequestVo paymentAddRequestVo) {
@@ -48,7 +45,6 @@ public class PaymentController {
     @PostMapping("/detail")
     @Operation(summary = "결제 내역 상세조회", description = "결제 내역 상세조회")
     public SuccessResponse<PaymentDetailResponseVo> paymentDetail(
-        @RequestHeader String token,
         @RequestHeader String uuid,
         @RequestBody PaymentDetailRequestVo paymentDetailRequestVo) {
         return new SuccessResponse<>(
@@ -59,7 +55,6 @@ public class PaymentController {
     @GetMapping("/paymentlist")
     @Operation(summary = "결제 내역 리스트조회", description = "결제 내역 리스트조회")
     public SuccessResponse<List<PaymentListResponseVo>> paymentList(
-        @RequestHeader String token,
         @RequestHeader String uuid) {
         List<PaymentListResponseDto> paymentListResponseDtoList = paymentService.findPaymentList(
             uuid);
