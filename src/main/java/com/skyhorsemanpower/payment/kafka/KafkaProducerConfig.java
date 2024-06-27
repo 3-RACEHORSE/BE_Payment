@@ -38,8 +38,6 @@ public class KafkaProducerConfig {
     @Bean
     public NewTopic notificationServiceTopic() {
         return TopicBuilder.name(Topics.Constant.NOTIFICATION_SERVICE)
-                .partitions(2)
-                .replicas(2)
                 .config(TopicConfig.RETENTION_MS_CONFIG, String.valueOf(172800000))
                 .build();
     }
@@ -47,8 +45,6 @@ public class KafkaProducerConfig {
     @Bean
     public NewTopic chatServiceTopic() {
         return TopicBuilder.name(Topics.Constant.CHAT_SERVICE)
-                .partitions(2)
-                .replicas(2)
                 .config(TopicConfig.RETENTION_MS_CONFIG, String.valueOf(172800000))
                 .build();
     }
