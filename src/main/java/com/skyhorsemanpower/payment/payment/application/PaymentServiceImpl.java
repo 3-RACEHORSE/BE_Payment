@@ -5,11 +5,8 @@ import com.skyhorsemanpower.payment.common.exception.CustomException;
 import com.skyhorsemanpower.payment.common.exception.ResponseStatus;
 import com.skyhorsemanpower.payment.iamport.IamportService;
 import com.skyhorsemanpower.payment.iamport.dto.PaymentInfoDto;
-import com.skyhorsemanpower.payment.kafka.KafkaProducerCluster;
-import com.skyhorsemanpower.payment.kafka.Topics;
 import com.skyhorsemanpower.payment.payment.domain.Payment;
 import com.skyhorsemanpower.payment.payment.dto.PaymentAddRequestDto;
-import com.skyhorsemanpower.payment.payment.dto.PaymentCompleteDto;
 import com.skyhorsemanpower.payment.payment.dto.PaymentDetailRequestDto;
 import com.skyhorsemanpower.payment.payment.dto.PaymentDetailResponseDto;
 import com.skyhorsemanpower.payment.payment.dto.PaymentListResponseDto;
@@ -33,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
-    private final KafkaProducerCluster producer;
     private final IamportService iamportService;
 
     //paymentUuid 생성
@@ -76,7 +72,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Transactional
-    public void savePayment(String memberUuid, String impUid, PaymentAddRequestDto paymentAddRequestDto) {
+    public void savePayment(String memberUuid, String impUid,
+        PaymentAddRequestDto paymentAddRequestDto) {
         try {
             Payment pendingPayment = getPendingPayment(memberUuid,
                 paymentAddRequestDto.getAuctionUuid());
@@ -102,10 +99,6 @@ public class PaymentServiceImpl implements PaymentService {
             log.info("paymentAddRequest error message: {}", exception.getMessage());
             throw new CustomException(ResponseStatus.DATABASE_INSERT_FAIL);
         }
-
-        //TODO: 재시도 처리, 예외 처리 추가
-        this.producer.sendMessage(Topics.Constant.CHAT_SERVICE, PaymentCompleteDto.builder()
-            .memberUuid(memberUuid).build());
     }
 
     private Payment getPendingPayment(String memberUuid, String auctionUuid) {
