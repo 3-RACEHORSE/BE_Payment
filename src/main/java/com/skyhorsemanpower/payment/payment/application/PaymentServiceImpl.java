@@ -3,6 +3,7 @@ package com.skyhorsemanpower.payment.payment.application;
 import com.skyhorsemanpower.payment.common.PaymentStatus;
 import com.skyhorsemanpower.payment.common.exception.CustomException;
 import com.skyhorsemanpower.payment.common.exception.ResponseStatus;
+import com.skyhorsemanpower.payment.common.swagger.PaymentEndTime;
 import com.skyhorsemanpower.payment.iamport.IamportService;
 import com.skyhorsemanpower.payment.iamport.dto.PaymentInfoDto;
 import com.skyhorsemanpower.payment.payment.domain.Payment;
@@ -54,14 +55,18 @@ public class PaymentServiceImpl implements PaymentService {
         if (PaymentReadyVo.validate(paymentReadyVo)) {
             paymentReadyVo.getMemberUuids().forEach(memberUuid -> {
                 try {
-                    String paymentUuid = createPaymentUuid();
-                    paymentRepository.save(Payment.builder()
-                        .paymentUuid(paymentUuid)
-                        .auctionUuid(paymentReadyVo.getAuctionUuid())
-                        .memberUuid(memberUuid)
-                        .paymentStatus(PaymentStatus.PENDING)
-                        .price(paymentReadyVo.getPrice())
-                        .build());
+                    Optional<Payment> pendingPaymentOpt = paymentRepository.findByMemberUuidAndAuctionUuid(
+                        memberUuid, paymentReadyVo.getAuctionUuid());
+                    if (pendingPaymentOpt.isEmpty()) {
+                        String paymentUuid = createPaymentUuid();
+                        paymentRepository.save(Payment.builder()
+                            .paymentUuid(paymentUuid)
+                            .auctionUuid(paymentReadyVo.getAuctionUuid())
+                            .memberUuid(memberUuid)
+                            .paymentStatus(PaymentStatus.PENDING)
+                            .price(paymentReadyVo.getPrice())
+                            .build());
+                    }
                 } catch (RuntimeException exception) {
                     log.info("createPayment error message: {}", exception.getMessage());
                     throw new CustomException(ResponseStatus.DATABASE_INSERT_FAIL);
@@ -78,27 +83,44 @@ public class PaymentServiceImpl implements PaymentService {
             Payment pendingPayment = getPendingPayment(memberUuid,
                 paymentAddRequestDto.getAuctionUuid());
 
-            PaymentInfoDto paymentInfoDto = iamportService.getPaymentInfo(impUid);
+            if (pendingPayment.getPaymentStatus() == PaymentStatus.PENDING && isBeforeEndTime()) {
+                PaymentInfoDto paymentInfoDto = iamportService.getPaymentInfo(impUid);
 
-            Payment payment = Payment.builder()
-                .id(pendingPayment.getId())
-                .paymentUuid(pendingPayment.getPaymentUuid())
-                .impUid(impUid)
-                .auctionUuid(pendingPayment.getAuctionUuid())
-                .memberUuid(memberUuid)
-                .paymentMethod(paymentInfoDto.getPayMethod())
-                .paymentNumber(paymentInfoDto.getPayNumber())
-                .paymentStatus(PaymentStatus.COMPLETE)
-                .price(pendingPayment.getPrice())
-                .amountPaid(paymentInfoDto.getAmount())
-                .completionAt(LocalDateTime.now())
-                .build();
+                Payment payment = Payment.builder()
+                    .id(pendingPayment.getId())
+                    .paymentUuid(pendingPayment.getPaymentUuid())
+                    .impUid(impUid)
+                    .auctionUuid(pendingPayment.getAuctionUuid())
+                    .memberUuid(memberUuid)
+                    .paymentMethod(paymentInfoDto.getPayMethod())
+                    .paymentNumber(paymentInfoDto.getPayNumber())
+                    .paymentStatus(PaymentStatus.COMPLETE)
+                    .price(pendingPayment.getPrice())
+                    .amountPaid(paymentInfoDto.getAmount())
+                    .completionAt(LocalDateTime.now())
+                    .build();
 
-            this.paymentRepository.save(payment);
+                this.paymentRepository.save(payment);
+            }
         } catch (RuntimeException exception) {
             log.info("paymentAddRequest error message: {}", exception.getMessage());
             throw new CustomException(ResponseStatus.DATABASE_INSERT_FAIL);
         }
+    }
+
+    private boolean isBeforeEndTime() {
+        LocalDateTime now = LocalDateTime.now();
+
+        LocalDateTime nextDayTime = now.toLocalDate().plusDays(1)
+            .atTime(PaymentEndTime.COMPLETE.getHour(), PaymentEndTime.COMPLETE.getMinute());
+
+        if (now.isBefore(now.toLocalDate()
+            .atTime(PaymentEndTime.COMPLETE.getHour(), PaymentEndTime.COMPLETE.getMinute()))) {
+            nextDayTime = now.toLocalDate()
+                .atTime(PaymentEndTime.COMPLETE.getHour(), PaymentEndTime.COMPLETE.getMinute());
+        }
+
+        return now.isBefore(nextDayTime);
     }
 
     private Payment getPendingPayment(String memberUuid, String auctionUuid) {
