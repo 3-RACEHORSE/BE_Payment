@@ -1,8 +1,6 @@
 package com.skyhorsemanpower.payment.kafka;
 
-import com.skyhorsemanpower.payment.kafka.dto.AlarmDto;
 import com.skyhorsemanpower.payment.payment.application.PaymentService;
-import com.skyhorsemanpower.payment.payment.dto.PaymentListResponseDto;
 import com.skyhorsemanpower.payment.payment.vo.PaymentReadyVo;
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
@@ -21,6 +19,21 @@ import org.springframework.stereotype.Component;
 public class KafkaConsumerCluster {
 
     private final PaymentService paymentService;
-    private final KafkaProducerCluster producer;
 
+    @KafkaListener(topics = Topics.Constant.AUCTION_CLOSE, groupId = "${spring.kafka.consumer.group-id}")
+    public void consumeBidder(@Payload LinkedHashMap<String, Object> message,
+        @Headers MessageHeaders messageHeaders) {
+        log.info("consumer: success >>> message: {}, headers: {}", message.toString(),
+            messageHeaders);
+
+        PaymentReadyVo paymentReadyVo = PaymentReadyVo.builder()
+            .auctionUuid(message.get("auctionUuid").toString())
+            .memberUuids((List<String>) message.get("memberUuids"))
+            .price(new BigDecimal(message.get("price").toString()))
+            .build();
+
+        log.info("consumer: success >>> paymentReadyVo: {}", paymentReadyVo.toString());
+
+        paymentService.createPayment(paymentReadyVo);
+    }
 }
