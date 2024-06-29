@@ -23,16 +23,12 @@ public class KafkaConsumerCluster {
     @KafkaListener(topics = Topics.Constant.AUCTION_CLOSE, groupId = "${spring.kafka.consumer.group-id}")
     public void consumeBidder(@Payload LinkedHashMap<String, Object> message,
         @Headers MessageHeaders messageHeaders) {
-        log.info("consumer: success >>> message: {}, headers: {}", message.toString(),
-            messageHeaders);
 
         PaymentReadyVo paymentReadyVo = PaymentReadyVo.builder()
             .auctionUuid(message.get("auctionUuid").toString())
             .memberUuids((List<String>) message.get("memberUuids"))
             .price(new BigDecimal(message.get("price").toString()))
             .build();
-
-        log.info("consumer: success >>> paymentReadyVo: {}", paymentReadyVo.toString());
 
         paymentService.createPayment(paymentReadyVo);
     }
